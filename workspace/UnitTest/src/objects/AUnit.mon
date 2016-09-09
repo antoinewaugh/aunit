@@ -1,0 +1,388 @@
+//*****************************************************************************
+//Title:         AUnit
+//Description:   EPL Unit testing framework
+//Dependencies:  AUnit Installation
+//Author:        Antoine Waugh
+//*****************************************************************************
+
+package com.aunit;
+
+/**
+* Assert
+* 
+* Abstract data type used to communicate result of assertions to test channel.
+*
+*/
+
+event Assert {
+	string reference;
+	boolean assertion;
+	string message;
+}
+
+/**
+* TestActionComplete
+* 
+* Informs test framework that all assertions for a specific test have been completed
+*
+*/
+
+event TestActionComplete {
+	string testName;
+}
+
+
+/**
+* TestComplete
+* 
+* Informs test framework that all tests have been completed
+*
+*/
+
+event TestComplete {}
+
+/**
+* TestWrapper converts synchronous tests to asynchronous.
+* 
+* Allows AUnit framework to assume all tests are of type async.
+*
+*/
+
+event SynchronousTestWrapper {
+	
+	action<> test; 
+	
+	action create(action<> test) returns action< action<> > {
+		self.test := test;
+		return self.run;
+	}
+	
+	action run(action<> cbDone) {
+		self.test();
+		cbDone();
+	}
+
+}
+
+/**
+*	Basic test container
+*/
+event AsynchronousTest {
+	
+	string name;
+	action< action<> > test;
+
+	integer failCount;
+	integer passCount;
+	
+	action register(Assert assertion) {
+		if assertion.assertion then {
+			passCount := passCount + 1;
+		} else {
+			failCount := failCount + 1;
+		}
+	}
+
+	action getResultString() returns string {
+
+		string result := self.name + " : ";
+			
+		if self.failCount > 0 then {
+			result := result + "FAILED. ";
+		} else {
+			result := result + "PASSED. ";
+		}
+
+		result := result + " Assert Ref: " + self.passCount.toString() + " successful / " + self.failCount.toString() + " unsuccessful.";
+
+		return result;
+	}
+
+}
+
+/**
+* TestExecutor
+* 
+* Responsible for loading and running tests. User can load tests with both synchronous and asynchronous signatures.
+*
+* Used by AUnit's TestRunner.mon to stack and execute a series of test actions.
+*/
+
+event TestExecutor {
+
+	action< action<> > setup;
+	action< action<> > teardown;
+	action< action<> > initialise;
+
+	AsynchronousTest currentTest;	
+	sequence<AsynchronousTest> tests;
+	
+	string reference;
+	
+	action create(string reference, action<action<> > setup, action<action<> > teardown, action<action<> > initialise) returns TestExecutor {
+		
+		monitor.subscribe(self.getName());
+		
+		self.reference := reference;
+		self.setup := setup;
+		self.teardown := teardown;
+		self.initialise := initialise;
+
+		listenAsserts();
+		
+		return self;
+
+	}
+	
+	/**
+	* Load a Synchronous test into the framework
+	*/
+	
+	action loadSynchronous(string name, action<> fnTest) {
+		self.tests.append(AsynchronousTest(name, (new SynchronousTestWrapper).create(fnTest),0,0));
+	}
+
+	/**
+	* Load an Asynchronous test into the framework
+	*/
+	
+	action loadAsynchronous(string name, action< action<> > fnTest) {
+		self.tests.append(AsynchronousTest(name, fnTest,0,0));
+	}
+	
+	/**
+	* Run initialise function, await for callback prior to running unit tests
+	*/
+	
+	action execute() {
+		self.initialise(cbInitialised);
+	}
+
+	/**
+	* Execute all pre-loaded tests (synchronous & asynchronous).
+	* @private
+	*/
+	
+	action cbInitialised() {	
+		runNextTest();
+	}
+	
+	/**
+	* ListenAsserts
+	* @private
+	*/
+	
+	action listenAsserts() {
+
+		Assert assertion; 
+		on all Assert():assertion {
+			register(assertion);
+			publish(assertion);
+		} 
+		
+	}
+
+	/**
+	* runNextTest
+	* @private
+	*/
+	
+	action runNextTest() {
+		if testsPendingExecution() then {
+			log "AUnit : starting " + tests[0].name ;
+			setup(onSetupDone);
+		}
+		else {
+			publishTestsComplete();
+		}
+	}
+	
+	/**
+	* testsPendingExecution
+	* @private
+	*/
+	
+	action testsPendingExecution() returns boolean {
+		return self.tests.size() > 0;	
+	}
+	
+	/**
+	* onSetupDone
+	* @private
+	*/
+	
+	action onSetupDone() {
+		
+		// Assign Current test and remove from pending test list
+		currentTest := tests[0];
+		tests.remove(0);
+		
+		// onTestDone publishes TestActionComplete to hypertree to ensure all asserts have been processed prior to continuing to next test.
+		on TestActionComplete(currentTest.name) {
+
+			string message :=  currentTest.getResultString();
+			
+			emit message to "UnitTest";
+			log message at INFO;
+			
+			teardown(runNextTest);	
+		}
+
+		currentTest.test(onTestDone);
+	}
+	
+	/**
+	* onTestDone
+	* @private
+	*/
+	
+	action onTestDone() {
+		// publish TestActionComplete to hypertree to ensure all asserts have been processed prior to continuing to next test.
+		send TestActionComplete(currentTest.name) to self.getName();
+	}
+	
+	/**
+	* publishTestsComplete
+	* @private
+	*/
+	
+	action publishTestsComplete() {
+		string message := reference + " TESTS COMPLETE";
+		emit message to "UnitTest";
+		log message at INFO;
+		
+	}	
+	
+	/**
+	* Register Assertion
+	* @private
+	*/
+
+	action register(Assert assertion ) {
+		 self.currentTest.register(assertion);
+	}
+	
+	/**
+	* Publish Assertion
+	* @private
+	*/
+
+	action publish(Assert assertion) {
+		string message := assertion.reference + " => " + assertion.message;
+		emit message to "UnitTest";
+		log message at INFO;		
+	}
+
+}
+
+
+/**
+* Asserter Event
+* 
+* Provides a synchronous action interface for tests to assert primitive types.
+* Interface Used by 
+*/
+
+event Asserter {
+	
+	/**
+	* Asserts float value
+	* 
+	* @param a First Float to compare
+	* @param b Second Float to compare
+	*/
+	
+	action assertFloat(string ref, float a, float b) {
+		assertString(ref, a.toString(), b.toString());
+	}
+
+	
+	/**
+	* Asserts decimal value
+	* 
+	* @param a First Decimal to compare
+	* @param b Second Decimal to compare
+	*/
+	
+	action assertDecimal(string ref, decimal a, decimal b) {
+		assertString(ref, a.toString(), b.toString());
+	}
+	
+	
+	/**
+	* Asserts integer value
+	* 
+	* @param a First Integer to compare
+	* @param b Second Integer to compare
+	*/
+	
+	action assertInteger(string ref, integer a, integer b) {
+		assertString(ref, a.toString(), b.toString());
+	}
+	
+	
+	/**
+	* Asserts boolean value
+	* 
+	* @param a First Boolean to compare
+	* @param b Second Boolean to compare
+	*/
+	
+	action assertBoolean(string ref, boolean a, boolean b) {
+		assertString(ref, a.toString(), b.toString());
+	}
+	
+	
+	/**
+	* Asserts parameter for truth
+	* 
+	* @param a Value which truth assertion is being made
+	*/
+
+	action assertTrue(string ref, boolean a) {
+		assertString(ref, a.toString(), "true");
+	}
+	
+	/**
+	* Asserts float value within specified range. 
+	* 
+	* Provides leniency to avoid floating point errors which cause assertFloat to return false.
+	* 
+	* @param a First Float to compare
+	* @param b Second Float to compare
+	* @param c Error (positive or negative) in which a and b are to be considered comperable
+	*/
+	
+	action assertFloatWithinThreshold(string ref, float a, float b, float error) {
+		performAssert(ref, (a-b).abs() <= error,
+		                "Assert ABS(" + a.toString() + " - " + b.toString() + ") <= " + error.toString() );
+	}
+	
+	/**
+	* Asserts String values
+	* 
+	* @param a First String to compare
+	* @param b Second String to compare
+	*/
+	action assertString(string ref, string a, string b) {
+		performAssert(ref, 
+		              a.toString() = b.toString(),
+		              "Assert " + a + " = " + b);
+	}
+	
+	/**
+	* Perform Assert
+	* 
+	* Pushes assertion result to test channel
+	*
+	* @private
+	*/
+	action performAssert(string ref, boolean assertion, string msg) {
+		if (not assertion) then { 
+			msg := "FAILED " + msg;
+		}
+		send Assert(ref, assertion, msg) to TestExecutor.getName();
+	}
+}
+
+

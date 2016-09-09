@@ -1,0 +1,59 @@
+package com.aunit.sample;
+
+using com.aunit.Asserter;
+
+event SampleEvent {
+    string a;
+}
+
+//@Depends test/sample.mon, UnitTest
+event SampleUnitTest {
+    
+    Asserter asserter;
+    
+    //@Test     
+    action test_001 {
+        // This synchronous test will complete immediately after the function returns.
+        asserter.assertTrue("test_001", not false);  
+    }
+
+ 
+    //@Test
+    action test_002(action<> cbDone) {
+
+        // This asynchronous test will complete once cbDone() is called. Failure to call cbDone() will result in a hanging test.
+        SampleEvent expected := SampleEvent("value");
+        
+        SampleEvent s;
+
+        on SampleEvent():s 
+            and not on wait(1.0) {
+                asserter.assertString(s.toString(), expected.toString());
+                cbDone();
+        }
+
+        on wait(1.0) 
+            and not SampleEvent() {
+                asserter.assertTrue("SampleEvent not routed", false);
+                cbDone();
+        }
+
+        route SampleEvent("value");
+    }
+
+    //@Initialise
+    action init(action<> cbInit) {
+        cbInit();
+    }
+    
+    //@Setup
+    action setup(action<> cbSetup) { 
+        cbSetup();
+    }
+    
+    //@Teardown
+    action teardown(action<> cbTeardown) {
+        cbTeardown();
+    }
+    
+}

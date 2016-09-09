@@ -1,0 +1,21 @@
+/*
+
+@ Auto-Generated Code
+
+*/
+
+{!packagename}
+
+monitor {!eventname}_TestRunner {
+
+	com.aunit.TestExecutor t;
+	{!eventname} tests;
+
+	action onload() {
+		t := t.create("{!eventname}_TestRunner", tests.{!setupaction}, tests.{!teardownaction}, tests.{!initialiseaction});
+		{!load_list}
+		t.execute();
+	}
+
+}
+

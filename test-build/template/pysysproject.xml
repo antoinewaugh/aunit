@@ -1,0 +1,48 @@
+<?xml version="1.0" standalone="yes"?>
+<pysysproject>
+
+	<!--
+	Get a reference to the environment, which can then be used as a substitution variable
+	within the project file
+	-->
+	<property environment="env"/>
+
+
+	<!--
+	Get a reference to the osfamily, which can then be used as a substitution variable
+	within the project file
+	-->
+	<property osfamily="osfamily"/>
+
+
+	<!--
+	Set a property on the project class. The property can then be used as a substitution variable
+	within the project file, and is also set as an attribute to the project class so it's value
+	can be reference internally within the PySys framework
+	 -->
+	<!-- Set apama project details from the environment -->
+	<property name="APAMA_LIBRARY_VERSION"   value="${env.APAMA_LIBRARY_VERSION}"/>
+	<property name="APAMA_HOME"              value="${env.APAMA_HOME}"/>
+	<property name="APAMA_WORK"              value="${env.APAMA_WORK}"/>
+	<property name="APAMA_COMMON_JRE"        value="${env.APAMA_COMMON_JRE}"/>
+
+	<!--
+	Import properties from file (fails silently if the file does not exist). The imported
+	file should be of the format name=value (one pair specified per line). Any imported names
+	can again be used as a substitution variables within the project file, and are also set as
+	attributes to the project class. The value in the imported file can be defined to use
+	substitution through the ${variable} syntax (where variable must be defined before the import
+	 -->
+	<property file="${osfamily}.properties" />
+
+
+	<!--
+	Use a custom runner class that extends the BaseRunner class distributed with PySys. Extensions to
+	the BaseRunner are used to define custom setup and tear down operations before running the set of
+	selected tests (e.g. to load test data into a relational database prior to the test runs, and then
+	clear out the data on completion), as well as to defined operations between the execution of individual
+	tests and after completion of a cycle of tests.
+	-->
+	<runner classname="ApamaRunner" module="apama.runner"/>
+
+</pysysproject>

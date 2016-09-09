@@ -1,0 +1,184 @@
+<project name="aunit-build" default="all" >
+
+	<property environment="env"/>
+
+	<fail unless="env.AUNIT_HOME" message="Environment Variable AUNIT_HOME not set."/>
+	<fail unless="env.AUNIT_PROJECT_HOME" message="Environment Variable AUNIT_PROJECT_HOME not set."/>
+	<fail unless="env.APAMA_HOME" message="Environment Variable APAMA_HOME not set."/>
+
+	<!-- 
+		Imports
+	-->
+	<import file="${env.APAMA_HOME}/etc/apama-macros.xml" />
+
+	<!-- 
+		Current Version Aunit has static folder definitions. Future releases will support ENV var override 
+	-->
+	<property name="aunit.build.dir" value="${env.AUNIT_HOME}/project-build" />
+	<property name="aunit.workspace.dir" value="${env.AUNIT_PROJECT_HOME}" />
+	<property name="aunit.repository.dir" value="${env.AUNIT_HOME}/.__repository" />
+
+	<target name="all" depends="prepare_repository">
+		<build_repository />
+	</target>
+
+	<!-- 
+		Hash Creation - used by generated build_scripts/cdp_build_script.xml
+	-->
+	<macrodef name="create-hash">
+		<attribute name="file" default="" />
+		<sequential>
+			
+			<!-- Only create the hash file if not quick/dev build -->
+			<if>
+				<equals arg1="${env.quickBuild}" arg2="false"/>
+				<then>
+					<echo> Creating Hash for @{file} </echo>
+					<var name="eiArgs" />
+					<append-arg-if-true var="eiArgs" optionName="--hashes" arg="true" />
+
+					<exec executable="${apama.bin}/engine_inject${bin.ext}">
+						<arg line="${eiArgs}" />
+						<arg file="@{file}" />
+						<redirector append="true">
+							<outputfilterchain>
+								<replacestring from="${hashes-matchstring}${file.separator}"/>
+								<!-- Convert all file separators to forward slashes -->
+								<replacestring from="\" to="/"/>
+							</outputfilterchain>
+						</redirector>
+					</exec>
+				</then>
+			</if>
+		</sequential>
+	</macrodef>
+
+	<!-- 
+		Prepare repository folder for *.cdp creation
+	-->
+	<target name="prepare_repository">
+	
+		<!-- copy source projects to /repository/projects directory -->
+		<copy todir="${aunit.repository.dir}/projects">
+			<fileset dir="${aunit.workspace.dir}">			
+			<include name="**/*.mon"/>	
+				<include name="**/*.evt"/>
+			</fileset>
+		</copy>
+
+		<!-- copy bundle definitions to /repository/bundle_definitions directory -->
+		<copy todir="${aunit.repository.dir}/bundle_definitions" flatten="true">
+			<fileset dir="${aunit.workspace.dir}">
+				<include name="**/*.aunit"/>
+			</fileset>
+		</copy>
+
+		<!-- convert *.rtb file to *.xml -->
+		<move todir="${aunit.repository.dir}/bundle_definitions" includeemptydirs="false">
+			<fileset dir="${aunit.repository.dir}/bundle_definitions"/>
+			<mapper type="glob" from="*.aunit" to="*.xml"/>
+		</move>	
+	
+		<!-- copy required ant source files to /repository/ant_macros, /repository/common -->
+		<copy todir="${aunit.repository.dir}">
+			<fileset dir="${aunit.build.dir}">
+				<include name="common/**"/>
+				<include name="ant_macros/**"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- 
+		Build *.cdp repository
+	-->
+	<macrodef name="build_repository">
+		<sequential>
+				
+			<property name="common.xslt.dir" value="${aunit.repository.dir}/common/xslt" />
+	
+			<!-- create project bundle file -->
+			<echo>Creating Project bundle file</echo>
+			<xslt basedir="${aunit.repository.dir}/bundle_definitions" includes="*.xml" extension=".bnd" destdir="${aunit.repository.dir}/bundles" style="${common.xslt.dir}/cdp_bundle.xslt">
+				<param name="dir" expression="../cdp" />
+				<param name="cdp_dir" expression="${AUNIT_HOME}/.__repository/cdp" />
+			</xslt>
+			
+			<!-- create manifest file -->
+			<echo>Creating Project manifest file</echo>
+
+			<xslt basedir="${aunit.repository.dir}/bundle_definitions" includes="*.xml" extension="_manifest.txt" destdir="${aunit.repository.dir}/manifest" style="${common.xslt.dir}/cdp_manifest.xslt">
+			</xslt>
+		
+			<!-- create manifest file for cdp -->
+			<xslt basedir="${aunit.repository.dir}/bundle_definitions" includes="*.xml" extension="_manifest.txt" destdir="${aunit.repository.dir}/build_scripts" style="${common.xslt.dir}/cdp_build_scripts.xslt">
+				<param name="manifest_extension" expression="_manifest.txt"/>
+				<param name="manifest_dir" expression="${aunit.repository.dir}/manifest"/>
+				<param name="source_dir" expression="${aunit.repository.dir}"/> 							
+				<param name="macro_dir" expression="${env.AUNIT_HOME}/.__repository/cdp" />
+			</xslt>
+			
+			<echo>Creating CDP build script </echo>
+
+			<!-- Create cdp build script -->
+			<concat destfile="${aunit.repository.dir}/build_scripts/cdp_build_script.xml">
+				<header filtering="no"><![CDATA[<project name="CDP_build_script">]]>&#010;&#010;<![CDATA[<target name="build_cdps">]]>&#010;</header>
+				<fileset dir="${aunit.repository.dir}/build_scripts" includes="*.txt"/>
+				<!-- Add a tab to all line read in -->
+				<filterchain>
+					<prefixlines prefix="&#009;"/>
+				</filterchain>
+				<footer filtering="no"><![CDATA[</target></project>]]></footer>
+			</concat>
+			
+			<echo>Creating Project CDP file</echo>
+			
+			<!-- Call Cdp build script-->
+			<ant antfile="${aunit.repository.dir}/build_scripts/cdp_build_script.xml" target="build_cdps"/>		
+			
+			<!-- Create Project CDP macro (locally) -->
+			<xslt basedir="${aunit.repository.dir}/bundle_definitions" includes="*.xml" extension=".macro" destdir="${aunit.repository.dir}/macros" style="${common.xslt.dir}/cdp_macro.xslt">
+				<param name="macro_dir" expression="${env.AUNIT_HOME}/.__repository/cdp" />
+			</xslt>
+		
+			<concat-asb-macros source="${aunit.repository.dir}/macros" target="${aunit.repository.dir}" />
+	
+			<echo>Copying the default test macro file</echo>
+			<copy todir="${aunit.repository.dir}/ant_macros">
+				<fileset dir="${aunit.repository.dir}/ant_macros">
+					<include name="aunit-imports.xml"/>
+				</fileset>				
+			</copy>
+		
+			<!-- Delete TEMP/WORKING folders & contents -->
+			<delete dir="${aunit.repository.dir}/build_scripts" />
+			<delete dir="${aunit.repository.dir}/macros" />
+			<delete dir="${aunit.repository.dir}/manifest" />
+			<delete dir="${aunit.repository.dir}/bundle_definitions" />
+			<delete dir="${aunit.repository.dir}/common" />
+			<delete dir="${aunit.repository.dir}/projects" />
+			<delete file="${aunit.repository.dir}/ant_macros/build.xml" />
+			<delete file="${aunit.repository.dir}/ant_macros/prepare_build.xml" />
+			
+			</sequential>
+					
+		</macrodef>
+		
+		<!-- MACRO CREATION -->
+		<macrodef name="concat-asb-macros">
+			<attribute name="source"/>
+			<attribute name="target"/>
+			<sequential>
+				<!-- Merge all resulting macros files into one -->
+				<concat destfile="@{target}/ant_macros/aunit.xml">
+					<header filtering="no"><![CDATA[<project name="AUNITBundles" basedir="." >]]>&#010;&#010;</header>
+					<fileset dir="@{source}" includes="*.macro"/>
+					<!-- Add a tab to all line read in -->
+					<filterchain>
+						<prefixlines prefix="&#009;"/>
+					</filterchain>
+					<footer filtering="no"><![CDATA[</project>]]></footer>
+				</concat>
+			</sequential>
+		</macrodef>
+
+</project>

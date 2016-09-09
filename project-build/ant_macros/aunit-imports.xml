@@ -1,0 +1,39 @@
+<project name="AUNIT-Imports">
+	
+	<!-- Macro to set the host and port before injecting bundles-->
+	<macrodef name="set-correlator-host-and-port">
+
+		<attribute name="host" />
+		<attribute name="port" />
+		
+		<sequential>		
+		<condition property="host" value="${correlator.host}">
+			<not>  
+				<isset property="host"/>
+			</not>
+		</condition>		
+		<condition property="port" value="${correlator.port}">
+			<not>  
+				<isset property="port"/>
+			</not>
+		</condition>
+		</sequential>
+	</macrodef>
+
+	<!-- Import environment variables -->
+	<property environment="env"/>
+
+	<!-- Base APAMA ant macro file, do not remove. Must be below macrodef above -->
+	<import file="${env.APAMA_HOME}/etc/apama-macros.xml" />
+
+	<!-- Base AUNIT ant macro file, do not remove -->
+	<import file="${env.AUNIT_HOME}/.__repository/ant_macros/aunit.xml" />
+
+	<!-- Custom ant macro files below -->
+	
+	<!-- Base APAMA CMF ant macro files, uncomment if CMF available -->
+	<!-- import file="${env.APAMA_FOUNDATION_HOME}..." / -->
+	
+	
+</project>
+

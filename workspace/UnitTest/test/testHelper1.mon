@@ -1,0 +1,12 @@
+//*****************************************************************************
+// Title:         TestHelper1
+// Description:   TestHelper1 description
+// Dependencies:  None
+// Author:        Antoine
+//
+//*****************************************************************************
+
+
+event TestEvent1 {
+	string value;
+}

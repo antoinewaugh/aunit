@@ -1,0 +1,29 @@
+import sys, os, logging
+from pysys import log
+from pysys.constants import *
+from pysys.basetest import BaseTest
+from rt.framework.RTCorrelator import RTCorrelatorHelper
+
+
+class PySysTest(BaseTest):
+
+	def execute(self):
+		log.setLevel(logging.WARNING)
+		correlator = RTCorrelatorHelper(self)
+		correlator.start(logfile='correlator.log')
+		correlator.injectBundles(targets={!depends_bundles})
+		{!inject_depends_file_command}
+		correlator.injectMonitorscript(filenames='TestEvent.mon')
+		correlator.injectMonitorscript(filenames='TestRunner.mon')
+		self.waitForSignal(file='correlator.log', expr='TESTS COMPLETE', condition='==1', timeout=240, poll=0.1)
+		correlator.flush()
+
+	def validate(self):
+
+{!asserts}
+
+		self.assertLineCount(file='correlator.log', expr=' 0 successful', condition="==0",  assertMessage=" All tests perform an assert ")
+		self.assertLineCount(file='correlator.log', expr='TESTS COMPLETE', condition="==1", assertMessage="*** ALL TESTS COMPLETE CHECK *** ")			
+		log.setLevel(logging.INFO)
+
+
