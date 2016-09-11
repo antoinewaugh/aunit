@@ -4,7 +4,7 @@ IF "%AUNIT_HOME%"=="" GOTO :error
 IF "%AUNIT_PROJECT_HOME%"=="" GOTO :error
 
 :: Generate project packages
-call ant -q -f %AUNIT_HOME%\project-build\ant_macros\build.xml
+call ant -q -f "%AUNIT_HOME%\project-build\ant_macros\build.xml"
 
 GOTO :end
 

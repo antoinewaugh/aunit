@@ -4,10 +4,10 @@ IF "%AUNIT_HOME%"=="" GOTO :error
 IF "%AUNIT_PROJECT_HOME%"=="" GOTO :error
 
 :: Generate Pysys Tests
-call python %AUNIT_HOME%/test-build/aunit.py -a %AUNIT_HOME% -p %AUNIT_PROJECT_HOME%
+call python "%AUNIT_HOME%/test-build/aunit.py" -a "%AUNIT_HOME%" -p "%AUNIT_PROJECT_HOME%"
 
 :: Call Pysys Tests
-call %AUNIT_HOME%/.__test/runtests.bat
+call "%AUNIT_HOME%/.__test/runtests.bat"
 
 GOTO :end
 
