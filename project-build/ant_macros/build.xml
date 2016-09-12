@@ -73,7 +73,7 @@
 			</fileset>
 		</copy>
 
-		<!-- convert *.rtb file to *.xml -->
+		<!-- convert *.aunit file to *.xml -->
 		<move todir="${aunit.repository.dir}/bundle_definitions" includeemptydirs="false">
 			<fileset dir="${aunit.repository.dir}/bundle_definitions"/>
 			<mapper type="glob" from="*.aunit" to="*.xml"/>
