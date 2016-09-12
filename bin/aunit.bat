@@ -20,9 +20,14 @@ GOTO :usage
 :test
 
 :: Generate Pysys Tests
-call python "%AUNIT_HOME%/test-build/aunit.py" -a "%AUNIT_HOME%" -p "%AUNIT_PROJECT_HOME%"
+
+SET PROJECT_FILTER=-s%2
+IF "%2"=="" SET PROJECT_FILTER=""
+
+call python "%AUNIT_HOME%/test-build/aunit.py" -a "%AUNIT_HOME%" -p "%AUNIT_PROJECT_HOME%" "%PROJECT_FILTER%"
 
 :: Call Pysys Tests
+
 call "%AUNIT_HOME%/.__test/runtests.bat"
 
 GOTO :end
@@ -43,6 +48,7 @@ GOTO :end
 :: ########################################
 
 :error
+
 echo Warning: AUNIT_HOME and AUNIT_PROJECT_HOME must be defined.
 
 :: ########################################
@@ -51,7 +57,7 @@ echo Warning: AUNIT_HOME and AUNIT_PROJECT_HOME must be defined.
 
 :usage
 
-ECHO Usage: call "aunit build" or "aunit test"
+ECHO Usage: call "aunit build" or "aunit test [ProjectName]"
 
 :: ########################################
 :: END

@@ -1,4 +1,4 @@
-__author__ = 'antoine waugh'
+__author__ = 'antoine waugh: antoine@reltech.com'
 
 import shutil
 import getopt
@@ -19,6 +19,7 @@ def usage():
     print
     print "  -a, --aunit_home=dir             Look for aunit home in specified directory."
     print "  -p, --aunit_project_home=dir     Look for test files in specified directory."
+    print "  -s, --source_filename            Run only test event file provided."
     print "  -h, --help           Display this help message and exit"
     print
     sys.exit();
@@ -254,7 +255,10 @@ def load_contents(filepath):
     with open(filepath, "rt") as f:
         return f.read()
 
-def list_files(path, filenameFilter='*'):
+def list_files(path, filenameFilter='*', source_dir=''):
+    if source_dir != '':
+        path = os.path.join(path, source_dir)
+    print path
     return [y for x in os.walk(path) for y in glob(os.path.join(x[0], filenameFilter))]
 
 def create_pysys_test(aunit_test, filename, aunit_template_dir, source_dir, output_dir):
@@ -403,8 +407,10 @@ def create_pysys_test(aunit_test, filename, aunit_template_dir, source_dir, outp
 
 def main(argv):
 
+    source_filename = ''
+
     try:
-        opts, args = getopt.getopt(argv, "ha:p:", ["help", "aunit_home=", "aunit_project_home="])
+        opts, args = getopt.getopt(argv, "ha:p:s:", ["help", "aunit_home=", "aunit_project_home=", "source_filename="])
     except getopt.GetoptError, err:
         print err
         print
@@ -416,7 +422,9 @@ def main(argv):
             aunit_home = a
         if o in ["-p", "--aunit_project_home"]:
             aunit_project_home = a
-    if len( opts ) != 2:
+        if o in ["-s", "--source_filename"]:
+            source_filename = a
+    if len( opts ) != 2 and len(opts) != 3:
         usage() 
         sys.exit(2)
 
@@ -466,8 +474,7 @@ def main(argv):
 
     # For Each Valid TestEvent located in $AUNIT_PROJECT_HOME, 
     # create pysys test
-
-    for file in list_files(aunit_project_home,'*.mon'): 
+    for file in list_files(aunit_project_home, '*.mon', source_filename): 
        
         aunit_test = TestEvent(load_contents(file))
 
