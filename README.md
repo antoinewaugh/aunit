@@ -21,11 +21,11 @@ Currently aunit tests support:
   
 License: aunit is distributed under the terms of the MIT license, free and open source.
 
-For comments and suggestions please email antoine@reltech.com
+For comments and suggestions please email antoine AT reltech.com
 
 # Installation
 
-To install, download and unzip the latest version from github. Export the $AUNIT_HOME, $AUNIT_PROJECT_HOME environment variables. From an *apama command prompt* type the following:
+To install, download and unzip the latest version from github. Export the `$AUNIT_HOME`, `$AUNIT_PROJECT_HOME` environment variables. From an *apama command prompt* type the following:
 
 ```
 wget https://github.com/antoinewaugh/aunit/archive/master.zip
@@ -80,7 +80,7 @@ The test result should be written to the screen.
 
 # HelloWorld
 
-The HelloWorld project located in $AUNIT_HOME/workspace/HelloWorld demonstrates a working aunit *Test Event*, with all supported annotations. 
+The HelloWorld project located in `$AUNIT_HOME/workspace/HelloWorld` demonstrates a working aunit *Test Event*, with all supported annotations. 
 
 ## HelloWorldTest.mon example:
 
@@ -154,9 +154,9 @@ event HelloWorldTest {
 To run the HelloWorld sample, first follow the installation instructions, and then open an apama command prompt and type:
 
 ```
-$ cd $AUNIT_HOME/bin
-$ aunit build
-$ aunit test HelloWorld
+cd $AUNIT_HOME/bin
+aunit build
+aunit test HelloWorld
 ```
 
 Upon executing the above commands, the result of all unit tests should be written to the console
@@ -200,7 +200,7 @@ A test event is any *.mon file which matches the aunit test event template - tha
 
 ## Test Build Process
 
-When the `aunit test [ProjectName]` command is executed, aunit scans the $AUNIT_PROJECT_HOME directory for any *.mon files which match the *Test Event* signature as described above. 
+When the `aunit test [ProjectName]` command is executed, aunit scans the `$AUNIT_PROJECT_HOME` directory for any *.mon files which match the *Test Event* signature as described above. 
 
 For every *Test Event* a corresponding pysys test is created in the `$AUNIT_HOME/.__test` directory. These pysys tests are then run with a custom ant loader which injects any project and file-level dependencies, with the result printed to console. For example when running `aunit test HelloWorld` the following folder structure is made:
 
@@ -227,7 +227,7 @@ $AUNIT_HOME/.__test
 
 Pysys then runs against the above directory structure.
 
-If a *Test Event* or the build itself has any errors (such as invalid syntax), or you simply want to see more details such as the correlator.log,  the output of the pysys test run can be found in $AUNIT_HOME/.__test/ProjectName/Output. Looking to the files in this directory will give guidance on exactly what is occurring during the test run. Future versions of aunit may look to provide this information in the console output.
+If a *Test Event* or the build itself has any errors (such as invalid syntax), or you simply want to see more details such as the correlator.log,  the output of the pysys test run can be found in `$AUNIT_HOME/.__test/ProjectName/Output`. Looking to the files in this directory will give guidance on exactly what is occurring during the test run. Future versions of aunit may look to provide this information in the console output.
 
 It is recommended when starting out with aunit that you use the HelloWorldTest.mon as a template for other tests to ensure you start off with a valid test event signature. Further details on the annotations can be found below.
 
@@ -450,5 +450,5 @@ Once the aunit-imports.xml is updated the *.aunit file must be updated to includ
 
 ```
 
-For more information on utilising existing softwareAG packages please email me: antoine@reltech.com
+For more information on utilising existing softwareAG packages please email me: antoine AT reltech.com
 
