@@ -208,7 +208,7 @@ For every *Test Event* a corresponding pysys test is created in the `$AUNIT_HOME
 $AUNIT_HOME/.__test
 │
 └───HelloWorldTest
-│   │   pysystest.xl
+│   │   pysystest.xml
 │   │   run.py
 │   │
 │   └───Input
@@ -257,7 +257,7 @@ event SampleTestEvent {
 }
 ```
 
-Before running the tests within SampleTestEvent.mon a correlator will be initilised with test/sample.mon and UnitTest project injected respectively. Please note that changes to project-level dependencies require an `aunit build` to be run prior to testing to ensure the tests run against the latest codebase.
+Before running the tests within SampleTestEvent.mon a correlator will be initialised with test/sample.mon and UnitTest project injected respectively. Please note that changes to project-level dependencies require an `aunit build` to be run prior to testing to ensure the tests run against the latest codebase.
 
 Changes to test event files and single file dependencies do not require an `aunit build` to take effect.
 
@@ -300,7 +300,7 @@ Sample: SampleTestEvent.mon
 
 ## //@Initialise
 
-Initiailse action is called once prior to running a test event's suite of test actions. The annotation must be on the line preceding the epl initialise action definition. Once initialisation is complete the usercode should call cbInit() to return execution back to the test runner to start running the unit tests.
+Initialise action is called once prior to running a test event's suite of test actions. The annotation must be on the line preceding the epl initialise action definition. Once initialisation is complete the usercode should call cbInit() to return execution back to the test runner to start running the unit tests.
 
 ```
 //@Initialise
