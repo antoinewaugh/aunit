@@ -32,8 +32,7 @@
 	<!-- Custom ant macro files below -->
 	
 	<!-- Base APAMA CMF ant macro files, uncomment if CMF available -->
-	<!-- import file="${env.APAMA_FOUNDATION_HOME}..." / -->
-	
+    <!-- import file="${env.APAMA_FOUNDATION_HOME}/ASB/ant_macros/adapter-support-macros.xml" / -->
 	
 </project>
 
