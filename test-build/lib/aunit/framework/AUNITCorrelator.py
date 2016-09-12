@@ -5,7 +5,7 @@ from apama.correlator import CorrelatorHelper
 from pysys.constants import TRUE,FALSE,FOREGROUND,BACKGROUND,PROJECT,FAILED, ENVSEPERATOR
 
 
-class RTCorrelatorHelper(CorrelatorHelper):
+class AUNITCorrelatorHelper(CorrelatorHelper):
 
     def __init__(self, parent, port=None, host=None):
         CorrelatorHelper.__init__(self, parent, port, host)

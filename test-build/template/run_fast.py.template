@@ -2,14 +2,14 @@ import sys, os, logging
 from pysys import log
 from pysys.constants import *
 from pysys.basetest import BaseTest
-from rt.framework.RTCorrelator import RTCorrelatorHelper
+from aunit.framework.AUNITCorrelator import AUNITCorrelatorHelper
 
 
 class PySysTest(BaseTest):
 
 	def execute(self):
 		log.setLevel(logging.WARNING)
-		correlator = RTCorrelatorHelper(self)
+		correlator = AUNITCorrelatorHelper(self)
 		correlator.start(logfile='correlator.log')
 		correlator.injectBundles(targets={!depends_bundles})
 		{!inject_depends_file_command}
