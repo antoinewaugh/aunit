@@ -452,3 +452,21 @@ Once the aunit-imports.xml is updated the *.aunit file must be updated to includ
 
 For more information on utilising existing softwareAG packages please email me: antoine AT reltech.com
 
+## AUNIT_CDP_BUILD Flag
+
+By default, aunit builds are performed against project source. This ensures compatibility with the Apama Community and Core editions.
+
+Users who are on a version of apama which supports custom *.cdp injection, may wish to change the build type to CDP.
+
+This can be achieved by settin the `$AUNIT_CDP_BUILD` environment variable.
+
+```
+export AUNIT_CDP_BUILD=true
+aunit build
+
+...
+*** Creating CDP Build ***
+...
+```
+
+
