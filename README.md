@@ -341,7 +341,7 @@ The aunit build process is responsible for creating user defined project-level d
 
 Using a `*.aunit` extension file, users can add a project to the build process.
 
-When the `aunit build` command is run, the `$AUNIT_PROJECT_HOME` directory is scanned for any projects containing a `*.aunit` definition. Each user-defined project is then compiled in to a *.cdp, with a corresponding *.bnd and ant-macro.xml definition created.
+When the `aunit build` command is run, the `$AUNIT_PROJECT_HOME` directory is scanned for any projects containing a `*.aunit` definition. Each user-defined project's source is copied to repository directory, with a corresponding *.cdp, *.bnd and ant-macro.xml definition created.
 
 The resulting files are placed in the `$AUNIT_HOME/.__repository` directory.
 
