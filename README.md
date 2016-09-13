@@ -333,6 +333,58 @@ action teardown(action<> cbTeardown) {
 }
 ```
 
+# Asserter Event
+
+The com.aunit.Asserter event allows users to perform assertsions within their *Test Event* files. \
+
+**NB:** Asserts must be made within a test action.
+
+To use the asserter, simply import the *.bnd file to your SoftwareAG Studio, define it as a member of your test event and from there, the Asserter can be used without initialisation.
+
+```
+//@Depends UnitTest
+event SomeTestEvent {
+    
+    com.aunit.Asserter.Asserter asserter;
+
+    //@Test
+    action test_001() {
+        asserter.assertTrue("My assert", true);           // passes
+        asserter.assertTrue("My float assert", 1.0, 1.1); // fails
+    }
+
+}
+```
+
+## Asserter Event Interface
+
+Currently the asserter event supports the following interface:
+
+```
+action assertFloat(string ref, float a, float b);
+action assertDecimal(string ref, decimal a, decimal b);    
+action assertInteger(string ref, integer a, integer b);    
+action assertBoolean(string ref, boolean a, boolean b);
+action assertTrue(string ref, boolean a);
+action assertFloatWithinThreshold(string ref, float a, float b, float error);
+action assertString(string ref, string a, string b);
+
+```
+
+To assert two events are identical, use the paradigm
+
+```
+SomeEvent a := SomeEvent(1,2,3, "Some String Value");
+SomeEvent b := SomeEvent(1,2,3, "Some String Value");
+
+asserter.assertString("Comparing events a and b",
+                      a.toString(), 
+                      b.toString()
+);
+```
+
+For more insight, view the source at `$AUNIT_HOME/workspace/UnitTest/src/objects/Aunit.mon`
+
 # Aunit Build Process
 
 Invariably once the project you are testing grows larger than a few files you will want to define it as a project-level dependency. This prevents the need to manually list the single file dependencies, and allows for multi-project dependencies to be resolved and their injection sequence managed. 
@@ -468,5 +520,4 @@ aunit build
 *** Creating CDP Build ***
 ...
 ```
-
 
