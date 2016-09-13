@@ -24,7 +24,7 @@ GOTO :usage
 SET PROJECT_FILTER=-s%2
 IF "%2"=="" SET PROJECT_FILTER=""
 
-call python "%AUNIT_HOME%/test-build/aunit.py" -a "%AUNIT_HOME%" -p "%AUNIT_PROJECT_HOME%" "%PROJECT_FILTER%"
+call python "%AUNIT_HOME%/test-build/aunit.py" "%PROJECT_FILTER%"
 
 :: Call Pysys Tests
 

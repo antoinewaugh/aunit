@@ -255,10 +255,9 @@ def load_contents(filepath):
     with open(filepath, "rt") as f:
         return f.read()
 
-def list_files(path, filenameFilter='*', source_dir=''):
-    if source_dir != '':
+def list_files(path, filenameFilter='*', source_dir=None):
+    if source_dir:
         path = os.path.join(path, source_dir)
-    print path
     return [y for x in os.walk(path) for y in glob(os.path.join(x[0], filenameFilter))]
 
 def create_pysys_test(aunit_test, filename, aunit_template_dir, source_dir, output_dir):
@@ -407,7 +406,10 @@ def create_pysys_test(aunit_test, filename, aunit_template_dir, source_dir, outp
 
 def main(argv):
 
-    source_filename = ''
+    source_project = None
+    
+    aunit_home = os.environ.get('AUNIT_HOME')
+    aunit_project_home = os.environ.get('AUNIT_PROJECT_HOME')
 
     try:
         opts, args = getopt.getopt(argv, "ha:p:s:", ["help", "aunit_home=", "aunit_project_home=", "source_filename="])
@@ -424,9 +426,6 @@ def main(argv):
             aunit_project_home = a
         if o in ["-s", "--source_filename"]:
             source_filename = a
-    if len( opts ) != 2 and len(opts) != 3:
-        usage() 
-        sys.exit(2)
 
     print "AUNIT_HOME: {}".format(aunit_home)
     print "AUNIT_PROJECT_HOME: {}".format(aunit_project_home)
@@ -474,7 +473,7 @@ def main(argv):
 
     # For Each Valid TestEvent located in $AUNIT_PROJECT_HOME, 
     # create pysys test
-    for file in list_files(aunit_project_home, '*.mon', source_filename): 
+    for file in list_files(aunit_project_home, '*.mon', source_project): 
        
         aunit_test = TestEvent(load_contents(file))
 
