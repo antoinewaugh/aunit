@@ -22,6 +22,11 @@
 		<build_repository />
 	</target>
 
+	<tstamp>
+		<format property="BUNDLE_TODAY" pattern="yyyy-MM-dd" locale="en,UK"/>
+		<format property="BUNDLE_YEAR" pattern="yyyy" locale="en,UK"/>
+	</tstamp>
+
 	<!-- 
 		Hash Creation - used by generated build_scripts/cdp_build_script.xml
 	-->
@@ -57,6 +62,12 @@
 		Prepare repository folder for *.cdp creation
 	-->
 	<target name="prepare_repository">
+
+		<!-- delete previous repository -->
+		<delete dir="${aunit.repository.dir}/projects" failonerror="false" />
+		<delete dir="${aunit.repository.dir}/cdp"  failonerror="false" />
+		<delete dir="${aunit.repository.dir}/ant_macros"  failonerror="false" />
+		<delete dir="${aunit.repository.dir}/bundles"  failonerror="false" />
 	
 		<!-- copy source projects to /repository/projects directory -->
 		<copy todir="${aunit.repository.dir}/projects">
@@ -98,9 +109,20 @@
 	
 			<!-- create project bundle file -->
 			<echo>Creating Project bundle file</echo>
-			<xslt basedir="${aunit.repository.dir}/bundle_definitions" includes="*.xml" extension=".bnd" destdir="${aunit.repository.dir}/bundles" style="${common.xslt.dir}/cdp_bundle.xslt">
-				<param name="dir" expression="../cdp" />
+
+			<!-- Loop through all '*.xml' files for the cdp bundle -->
+			<!-- xslt basedir="${aunit.repository.dir}/bundle_definitions" includes="*.xml" extension=".bnd" destdir="${aunit.repository.dir}/bundles" style="${common.xslt.dir}/cdp_bundle.xslt">
 				<param name="cdp_dir" expression="${AUNIT_HOME}/.__repository/cdp" />
+				<param name="date" expression="${BUNDLE_TODAY}"/>
+				<param name="year" expression="${BUNDLE_YEAR}"/>
+				<param name="version" expression="${CMF_RELEASE_VERSION}"/>
+			</xslt -->
+
+			<!-- Loop through all '*.xml' files for the source bundle -->
+			<xslt basedir="${aunit.repository.dir}/bundle_definitions" includes="*.xml" extension=".bnd" destdir="${aunit.repository.dir}/bundles" style="${common.xslt.dir}/source_bundle.xslt">
+					<param name="date" expression="${BUNDLE_TODAY}"/>
+					<param name="year" expression="${BUNDLE_YEAR}"/>
+					<param name="version" expression="1.0"/>
 			</xslt>
 			
 			<!-- create manifest file -->
@@ -135,11 +157,16 @@
 			<!-- Call Cdp build script-->
 			<ant antfile="${aunit.repository.dir}/build_scripts/cdp_build_script.xml" target="build_cdps"/>		
 			
-			<!-- Create Project CDP macro (locally) -->
-			<xslt basedir="${aunit.repository.dir}/bundle_definitions" includes="*.xml" extension=".macro" destdir="${aunit.repository.dir}/macros" style="${common.xslt.dir}/cdp_macro.xslt">
+			<!-- Loop through all '*.xml' files for the cdp macros -->
+			<!-- xslt basedir="${aunit.repository.dir}/bundle_definitions" includes="*.xml" extension=".macro" destdir="${aunit.repository.dir}/macros" style="${common.xslt.dir}/cdp_macro.xslt">
 				<param name="macro_dir" expression="${env.AUNIT_HOME}/.__repository/cdp" />
-			</xslt>
-		
+			</xslt -->
+
+			<!-- Loop through all '*.xml' files for the source macros -->
+			<xslt basedir="${aunit.repository.dir}/bundle_definitions" includes="*.xml" extension=".macro" destdir="${aunit.repository.dir}/macros" style="${common.xslt.dir}/source_macro.xslt">
+					<param name="project_dir" expression="${env.AUNIT_HOME}/.__repository/projects" />
+			</xslt>	
+
 			<concat-asb-macros source="${aunit.repository.dir}/macros" target="${aunit.repository.dir}" />
 	
 			<echo>Copying the default test macro file</echo>
@@ -150,15 +177,18 @@
 			</copy>
 		
 			<!-- Delete TEMP/WORKING folders & contents -->
-			<delete dir="${aunit.repository.dir}/build_scripts" />
-			<delete dir="${aunit.repository.dir}/macros" />
-			<delete dir="${aunit.repository.dir}/manifest" />
-			<delete dir="${aunit.repository.dir}/bundle_definitions" />
-			<delete dir="${aunit.repository.dir}/common" />
-			<delete dir="${aunit.repository.dir}/projects" />
-			<delete file="${aunit.repository.dir}/ant_macros/build.xml" />
-			<delete file="${aunit.repository.dir}/ant_macros/prepare_build.xml" />
+			<delete dir="${aunit.repository.dir}/build_scripts"  failonerror="false"  />
+			<delete dir="${aunit.repository.dir}/macros"  failonerror="false" />
+			<delete dir="${aunit.repository.dir}/manifest"  failonerror="false" />
+			<delete dir="${aunit.repository.dir}/bundle_definitions"  failonerror="false" />
+			<delete dir="${aunit.repository.dir}/common"  failonerror="false" />
+			<delete file="${aunit.repository.dir}/ant_macros/build.xml" failonerror="false"  />
+			<delete file="${aunit.repository.dir}/ant_macros/prepare_build.xml"  failonerror="false" />
 			
+			<!-- below are subject to build type flag CDP/SOURCE -->
+			<!-- delete dir="${aunit.repository.dir}/cdp" / -->
+			<!-- delete dir="${aunit.repository.dir}/projects" / -->
+
 			</sequential>
 					
 		</macrodef>

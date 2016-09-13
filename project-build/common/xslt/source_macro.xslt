@@ -1,10 +1,12 @@
 <?xml version="1.0" standalone="yes"?> 
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xslt="http://xml.apache.org/xslt">
+
+	<xsl:param name="project_dir"/>
 	
 	<xsl:import href="macro_include.xslt"/>
 	
 	<xsl:output omit-xml-declaration="yes" method="xml" encoding="UTF-8" indent="yes" xslt:indent-amount="4"/>
-	
+
 	<!--  Find matching nested <bundle><source> tags -->
 	<xsl:template match="bundle">
 		<xsl:call-template name="header"/>
@@ -23,7 +25,7 @@
 			<!-- Only output if we have a 'fileset' tag -->
 			<xsl:if test="fileset">
 
-				<xsl:element name="set-host-and-port">
+				<xsl:element name="set-correlator-host-and-port">
 					<xsl:attribute name="port">${port}</xsl:attribute>
 					<xsl:attribute name="host">${host}</xsl:attribute>
 				</xsl:element>
@@ -35,7 +37,7 @@
 					<!-- Loop through each 'fileset' tag -->
 					<xsl:for-each select="fileset">
 						<xsl:element name="filelist">
-							<xsl:attribute name="dir"><xsl:value-of select="concat(../../@macro_dir, '/', @dir)"/></xsl:attribute>
+							<xsl:attribute name="dir"><xsl:value-of select="concat($project_dir,'/',../../@macro_dir, '/', @dir)"/></xsl:attribute>
 							<!-- Loop through each 'include' tag -->
 							<xsl:for-each select="include">
 								<xsl:element name="file">

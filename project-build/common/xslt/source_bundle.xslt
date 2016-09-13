@@ -1,6 +1,6 @@
 <?xml version="1.0" standalone="yes"?> 
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xslt="http://xml.apache.org/xslt">
-	<!-- Get params from ANT -->
+	
 	<xsl:param name="date"/>
 	<xsl:param name="year"/>
 	<xsl:param name="version"/>

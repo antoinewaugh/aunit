@@ -6,6 +6,14 @@
 		<xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
 		<xsl:attribute name="type">monitorscript</xsl:attribute>
 		<xsl:attribute name="singleton"><xsl:value-of select="@singleton"/></xsl:attribute>
+		<xsl:element name="version">
+			<xsl:element name="id"><xsl:value-of select="$version"/></xsl:element>
+			<xsl:element name="date"><xsl:value-of select="$date"/></xsl:element>
+			<xsl:element name="author"></xsl:element>
+			<xsl:element name="comments"></xsl:element>
+			<xsl:comment>
+			</xsl:comment>
+		</xsl:element>
 		<xsl:element name="description"><xsl:value-of select="@description"/></xsl:element>
 	</xsl:template>
 
