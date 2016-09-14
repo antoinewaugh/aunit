@@ -9,6 +9,8 @@ IF "%AUNIT_PROJECT_HOME%"=="" GOTO :error
 IF "%APAMA_HOME%"=="" GOTO :error
 IF "%APAMA_JRE%"=="" GOTO :error
 
+IF "%JAVA_HOME%"=="" SET JAVA_HOME=%APAMA_JRE%
+
 :: Check 'mode' being run
 IF "%1"=="build" GOTO :build
 IF "%1"=="test" GOTO :test
