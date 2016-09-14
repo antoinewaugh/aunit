@@ -6,6 +6,8 @@
 
 IF "%AUNIT_HOME%"=="" GOTO :error
 IF "%AUNIT_PROJECT_HOME%"=="" GOTO :error
+IF "%APAMA_HOME%"=="" GOTO :error
+IF "%APAMA_JRE%"=="" GOTO :error
 
 :: Check 'mode' being run
 IF "%1"=="build" GOTO :build
@@ -49,7 +51,14 @@ GOTO :end
 
 :error
 
-echo Warning: AUNIT_HOME and AUNIT_PROJECT_HOME must be defined.
+echo ""
+echo Warning: The following environment variables must be defined: 
+echo ""
+echo AUNIT_HOME
+echo AUNIT_PROJECT_HOME
+echo APAMA_HOME
+echo APAMA_JRE
+echo ""
 
 :: ########################################
 :: USAGE 
