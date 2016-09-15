@@ -335,7 +335,7 @@ action teardown(action<> cbTeardown) {
 
 # Asserter Event
 
-The com.aunit.Asserter event allows users to perform assertsions within their *Test Event* files. \
+The com.aunit.Asserter event allows users to perform assertsions within their *Test Event* files. 
 
 **NB:** Asserts must be made within a test action.
 
@@ -350,7 +350,7 @@ event SomeTestEvent {
     //@Test
     action test_001() {
         asserter.assertTrue("My assert", true);           // passes
-        asserter.assertTrue("My float assert", 1.0, 1.1); // fails
+        asserter.assertFloat("My float assert", 1.0, 1.1); // fails
     }
 
 }
