@@ -9,10 +9,10 @@ function test {
 
 	## Generate Pysys Tests
 
-	if [[ $# -eq 2 ]]; then 
-		python "${AUNIT_HOME}/test-build/aunit.py -s $2"
+	if [[ $# -eq 1 ]]; then
+		eval "python ${AUNIT_HOME}/test-build/aunit.py -s $1"
  	else
-		python "${AUNIT_HOME}/test-build/aunit.py"
+		eval "python ${AUNIT_HOME}/test-build/aunit.py"
  	fi
 	
 	## Call Pysys Tests
@@ -79,7 +79,11 @@ fi
 ## Check 'mode' being run
 
 if [[ $1 == "test" ]]; then
-	test
+	if [[ $# -eq 2 ]]; then 
+		test $2
+	else
+		test
+	fi
 else 
 	if [[ $1 == "build" ]]; then 
 		build

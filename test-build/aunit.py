@@ -412,7 +412,7 @@ def main(argv):
     aunit_project_home = os.environ.get('AUNIT_PROJECT_HOME')
 
     try:
-        opts, args = getopt.getopt(argv, "ha:p:s:", ["help", "aunit_home=", "aunit_project_home=", "source_filename="])
+        opts, args = getopt.getopt(argv, "ha:p:s:", ["help", "aunit_home=", "aunit_project_home=", "source_project="])
     except getopt.GetoptError, err:
         print err
         print
@@ -424,8 +424,8 @@ def main(argv):
             aunit_home = a
         if o in ["-p", "--aunit_project_home"]:
             aunit_project_home = a
-        if o in ["-s", "--source_filename"]:
-            source_filename = a
+        if o in ["-s", "--source_project"]:
+            source_project = a
 
     print "AUNIT_HOME: {}".format(aunit_home)
     print "AUNIT_PROJECT_HOME: {}".format(aunit_project_home)
