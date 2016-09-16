@@ -222,10 +222,11 @@ class TestEvent(object):
         """ Returns list bundle dependency names """
         annotation = self._annotations["DEPENDS_ANNOTATION"]
 
-        project_dependencies = []
+        project_dependencies = ['UnitTest']
         for depend in line[line.find(annotation)+len(annotation):].split(","):
             if depend.find('.mon') == -1:
-                project_dependencies.append(depend.strip())
+                if depend.strip() != "":
+                    project_dependencies.append(depend.strip())
         return project_dependencies
 
     def _get_file_dependencies(self, line):

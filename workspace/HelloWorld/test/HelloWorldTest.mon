@@ -6,7 +6,7 @@ event SampleEvent {
     string value;
 }
 
-//@Depends UnitTest
+//@Depends
 event HelloWorldTest {
     
     Asserter asserter;

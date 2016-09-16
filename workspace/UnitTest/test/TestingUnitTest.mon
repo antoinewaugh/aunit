@@ -10,7 +10,7 @@ package com.aunit.mytestpackage;
 
 using com.aunit.Asserter;
 
-//@Depends UnitTest/test/testHelper1.mon, UnitTest
+//@Depends UnitTest/test/testHelper1.mon
 event TestingUnitTest  {
 	
 	Asserter asserter;
