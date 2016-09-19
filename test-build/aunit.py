@@ -475,8 +475,8 @@ def main(argv):
     # For Each Valid TestEvent located in $AUNIT_PROJECT_HOME, 
     # create pysys test
     for file in list_files(aunit_project_home, '*.mon', source_project): 
-       
-        aunit_test = TestEvent(load_contents(file))
+        contents = load_contents(file) 
+        aunit_test = TestEvent(remove_single_line_comments(contents))
 
         # Determine if *.mon matches test event signature
         if aunit_test.is_valid():
