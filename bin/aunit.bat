@@ -5,7 +5,6 @@
 :: ########################################
 
 IF "%AUNIT_HOME%"=="" GOTO :error
-IF "%AUNIT_PROJECT_HOME%"=="" GOTO :error
 IF "%APAMA_HOME%"=="" GOTO :error
 IF "%APAMA_JRE%"=="" GOTO :error
 
@@ -28,11 +27,15 @@ GOTO :usage
 SET PROJECT_FILTER=-s%2
 IF "%2"=="" SET PROJECT_FILTER=""
 
+IF "%AUNIT_TEST_HOME%"=="" (
+	SET AUNIT_TEST_HOME=%AUNIT_HOME%\.__test
+)
+
 call python "%AUNIT_HOME%/test-build/aunit.py" "%PROJECT_FILTER%"
 
 :: Call Pysys Tests
 
-call "%AUNIT_HOME%/.__test/runtests.bat"
+call %AUNIT_TEST_HOME%\runtests.bat
 
 GOTO :end
 
@@ -57,7 +60,6 @@ echo ""
 echo Warning: The following environment variables must be defined: 
 echo ""
 echo AUNIT_HOME
-echo AUNIT_PROJECT_HOME
 echo APAMA_HOME
 echo APAMA_JRE
 echo ""

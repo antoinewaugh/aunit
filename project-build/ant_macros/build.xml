@@ -3,7 +3,6 @@
 	<property environment="env"/>
 
 	<fail unless="env.AUNIT_HOME" message="Environment Variable AUNIT_HOME not set."/>
-	<fail unless="env.AUNIT_PROJECT_HOME" message="Environment Variable AUNIT_PROJECT_HOME not set."/>
 	<fail unless="env.APAMA_HOME" message="Environment Variable APAMA_HOME not set."/>
 
 	<!-- 
@@ -12,11 +11,23 @@
 	<import file="${env.APAMA_HOME}/etc/apama-macros.xml" />
 
 	<!-- 
-		Current Version Aunit has static folder definitions. Future releases will support ENV var override 
+		Set Environment Variables if they dont already exist. 
+		 Ant property vars are immutable so override will not occur 
 	-->
+
+	<property name="env.AUNIT_PROJECT_HOME" value="${env.AUNIT_HOME}/workspace" />
+	<property name="env.AUNIT_TEST_HOME" value="${env.AUNIT_HOME}/.__test" />
+	<property name="env.AUNIT_BUNDLE_HOME" value="${env.AUNIT_HOME}/.__repository" />
+
+	<!-- 
+		Reference Variables
+	-->
+
 	<property name="aunit.build.dir" value="${env.AUNIT_HOME}/project-build" />
 	<property name="aunit.workspace.dir" value="${env.AUNIT_PROJECT_HOME}" />
-	<property name="aunit.repository.dir" value="${env.AUNIT_HOME}/.__repository" />
+	<property name="aunit.repository.dir" value="${env.AUNIT_BUNDLE_HOME}" />
+	<property name="aunit.test.dir" value="${env.AUNIT_TEST_HOME}" />
+	<property name="aunit.epl.dir" value="${aunit.build.dir}/epl" />
 
 	<target name="all" depends="prepare_repository">
 		<build_repository />
@@ -80,17 +91,32 @@
 		
 			<!-- copy source projects to /repository/projects directory -->
 			<copy todir="${aunit.repository.dir}/projects">
+
+				<!-- workspace -->
 				<fileset dir="${aunit.workspace.dir}">			
 				<include name="**/*.mon"/>	
 					<include name="**/*.evt"/>
 				</fileset>
+
+				<!-- aunit UnitTest project -->
+				<fileset dir="${aunit.epl.dir}">			
+				<include name="**/*.mon"/>	
+					<include name="**/*.evt"/>
+				</fileset>
+
 			</copy>
 
 			<!-- copy bundle definitions to /repository/bundle_definitions directory -->
 			<copy todir="${aunit.repository.dir}/bundle_definitions" flatten="true">
+				<!-- workspace -->
 				<fileset dir="${aunit.workspace.dir}">
 					<include name="**/*.aunit"/>
 				</fileset>
+				<!-- aunit UnitTest project -->
+				<fileset dir="${aunit.epl.dir}">
+					<include name="**/*.aunit"/>
+				</fileset>
+				
 			</copy>
 
 			<!-- convert *.aunit file to *.xml -->

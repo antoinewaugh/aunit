@@ -1,0 +1,31 @@
+<bundle name="UnitTest"
+		description="A framework for providing UnitTest functionality in EPL. To be used with AUnit."
+		dir="../projects/UnitTest"
+		macro_dir="UnitTest"
+		depends="UnitTest">
+
+	<source ext="" macro="UnitTest">
+		<fileset dir="src">
+			<include name="objects/AUnit.mon"/>
+		</fileset>
+	</source>
+
+	<cdp ext="" macro="UnitTest">
+		<fileset>
+			<include name="UnitTest.cdp"/>
+		</fileset>
+	</cdp>
+
+	<dependencies>
+		<!-- dependency bundle-filename="MemoryStore.bnd" catalog="${APAMA_HOME}/catalogs/bundles" / -->
+	</dependencies>
+	
+	<macros>
+		<macro name="UnitTest" unless="onlyMonitors">
+			<!-- depends name="memory-store-bundle" / -->
+		</macro>
+	</macros>
+
+</bundle>
+
+

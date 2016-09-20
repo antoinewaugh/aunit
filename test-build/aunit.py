@@ -13,13 +13,14 @@ ANNOTATION = '//@'
 NEWLINE = '\n'
 
 def usage():
-    print "Usage: aunit.py --aunit_home=dir --aunit_project_home=dir"
+    print "Usage: aunit.py [-s ProjectName]"
     print
-    print "Scans test source directory for aunit test files and creates associated pysys tests"
-    print
-    print "  -a, --aunit_home=dir             Look for aunit home in specified directory."
-    print "  -p, --aunit_project_home=dir     Look for test files in specified directory."
-    print "  -s, --source_filename            Run only test event file provided."
+    print "Scans test source directory for aunit test files and creates associated pysys tests."
+    print 
+    print "$AUNIT_HOME environment variable must be set, $AUNIT_PROJECT_HOME optional, defaults"
+    print "to $AUNIT_HOME/workspace if not set."
+    print 
+    print "  -s, --source         Run only test event file provided."
     print "  -h, --help           Display this help message and exit"
     print
     sys.exit();
@@ -410,10 +411,15 @@ def main(argv):
     source_project = None
     
     aunit_home = os.environ.get('AUNIT_HOME')
-    aunit_project_home = os.environ.get('AUNIT_PROJECT_HOME')
+
+    aunit_project_home = os.environ.get('AUNIT_PROJECT_HOME', 
+                                        os.path.join(aunit_home, 'workspace'))
+
+    test_output_dir = os.environ.get('AUNIT_TEST_HOME',
+                                     os.path.join(aunit_home, '.__test'))
 
     try:
-        opts, args = getopt.getopt(argv, "ha:p:s:", ["help", "aunit_home=", "aunit_project_home=", "source_project="])
+        opts, args = getopt.getopt(argv, "hs:", ["help", "source="])
     except getopt.GetoptError, err:
         print err
         print
@@ -421,15 +427,8 @@ def main(argv):
     for o, a in opts:
         if o in ["-h", "--help"]:
             usage()
-        if o in ["-a", "--aunit_home"]:
-            aunit_home = a
-        if o in ["-p", "--aunit_project_home"]:
-            aunit_project_home = a
-        if o in ["-s", "--source_project"]:
+        if o in ["-s", "--source"]:
             source_project = a
-
-    print "AUNIT_HOME: {}".format(aunit_home)
-    print "AUNIT_PROJECT_HOME: {}".format(aunit_project_home)
 
     # Validate AUNIT_HOME and AUNIT_PROJECT_HOME exist
     if not os.path.isdir(aunit_home) or \
@@ -437,16 +436,13 @@ def main(argv):
             print "AUNIT_HOME/AUNIT_PROJECT_HOME provided were not valid directories."
             sys.exit(2)
 
-
-    # Purge AUNIT_HOME/.__test directory if it exists
-    test_output_dir = os.path.join(aunit_home, '.__test')
-
-    if os.path.isdir(test_output_dir):
+    if os.path.exists(test_output_dir):
         if not os.access(test_output_dir, os.W_OK):
             os.chmod(path, stat.S_IWUSR)
         shutil.rmtree(test_output_dir, ignore_errors=True)
-    if not os.path.isdir(test_output_dir):
-        os.mkdir(test_output_dir)
+        
+    if not os.path.exists(test_output_dir):
+        shutil.os.mkdir(test_output_dir)
 
     # Copy Common Test Directories and Files
     aunit_test_build_dir = os.path.join(aunit_home, 'test-build')

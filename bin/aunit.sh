@@ -16,8 +16,10 @@ function test {
  	fi
 	
 	## Call Pysys Tests
-
-	eval "${AUNIT_HOME}/.__test/runtests.sh"
+	if [[ -z "$AUNIT_TEST_HOME" ]]; then 
+		export AUNIT_TEST_HOME=${AUNIT_HOME}/.__test
+	fi
+	eval "${AUNIT_TEST_HOME}/runtests.sh"
 
 }
 
@@ -42,7 +44,6 @@ function error {
 	echo "Warning: The following environment variables must be defined: "
 	echo 
 	echo "AUNIT_HOME"
-	echo "AUNIT_PROJECT_HOME"
 	echo "APAMA_HOME"
 	echo "APAMA_JRE"
 	echo 
@@ -59,7 +60,7 @@ function usage {
 
 ## Validate env vars set
 
-if [ -z "$AUNIT_HOME" ] || [ -z "$AUNIT_PROJECT_HOME" ] || [ -z "$APAMA_HOME" ] || [ -z "$APAMA_JRE" ]; then
+if [ -z "$AUNIT_HOME" ] || [ -z "$APAMA_HOME" ] || [ -z "$APAMA_JRE" ]; then
 	error
 	exit 1
 fi
