@@ -1,0 +1,54 @@
+package com.aunit.sample.test;
+
+using com.aunit.Asserter;
+
+using com.aunit.sample.Float;
+
+//@Depends Math/src/Float.mon
+event MathFloatTest {
+    
+    Asserter asserter;
+
+    //@Test     
+    action testFloatAdd() {
+
+        Float two := Float(2.0);
+        Float three := Float(3.0);
+
+        Float actual := two.add(three);
+        Float expected := Float(5.0);
+
+        asserter.assertFloat("testFloatAdd Float", actual.value, expected.value);
+        asserter.assertString("testFloatAdd string", actual.toString(), expected.toString());
+
+    }
+
+    //@Test     
+    action testFloatMultiply() {
+
+        Float two := Float(2.0);
+        Float three := Float(3.0);
+        
+        Float actual := two.multiply(three);
+        Float expected := Float(6.0);
+
+        asserter.assertFloat("testFloatMultiply Float", actual.value, expected.value);
+        asserter.assertString("testFloatMultiply string", actual.toString(), expected.toString());
+
+    }
+
+    //@Initialise
+    action init(action<> cbInit) {
+        cbInit();
+    }
+
+    //@Setup
+    action setup(action<> cbSetup) {
+        cbSetup();
+    }
+
+    //@Teardown
+    action teardown(action<> cbTeardown) {
+        cbTeardown();
+    }
+}

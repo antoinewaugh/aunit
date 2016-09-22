@@ -1,0 +1,32 @@
+<bundle name="Math"
+		description="A basic project to demonstrate user-level project dependency testing."
+		dir="../projects/Math"
+		macro_dir="Math"
+		depends="Math">
+
+	<source ext="" macro="Math">
+		<fileset dir="src">
+			<include name="Integer.mon"/>
+			<include name="Float.mon"/>
+		</fileset>
+	</source>
+
+	<cdp ext="" macro="Math">
+		<fileset>
+			<include name="Math.cdp"/>
+		</fileset>
+	</cdp>
+
+	<dependencies>
+		<!-- dependency bundle-filename="MemoryStore.bnd" catalog="${APAMA_HOME}/catalogs/bundles" / -->
+	</dependencies>
+	
+	<macros>
+		<macro name="Math" unless="onlyMonitors">
+			<!-- depends name="memory-store-bundle" / -->
+		</macro>
+	</macros>
+
+</bundle>
+
+

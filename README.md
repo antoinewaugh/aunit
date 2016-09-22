@@ -39,7 +39,7 @@ To test the success of the installation, run the aunit build and aunit test comm
 ```
 cd $AUNIT_HOME/bin
 aunit build
-aunit test
+aunit test HelloWorld
 ```
 
 The test result should be written to the screen.
@@ -167,7 +167,7 @@ Upon executing the above commands, the result of all unit tests should be writte
 
 You'll notice the `aunit build` command is run prior to running the test. This is because the HelloWorldTest.mon has a project-level dependency on the `UnitTest` project (the same is true for any *TestEvents*). By default, the UnitTest bundle is injected when running *TestEvents* and so it is optional to specify it in the //@Depends. If a *TestEvent* contains user-level project dependencies, changes must be built with the `aunit build` command proior to running `aunit test` to ensure the tests are run against the latest codebase.
 
-Changes to TestEvent.mon files and single file dependency references, however, do not require a rebuild prior to running the `aunit test` command.
+Changes to *TestEvent* files and single file dependency references, however, do not require a rebuild prior to running the `aunit test` command.
 
 For information on defining user-level project dependencies please see *Defining custom project-level dependencies*.
 
@@ -234,55 +234,66 @@ The current version of aunit requires all annotations exist in a *TestEvent* fil
 
 ## //@Depends
 
-Used to specify any *TestEvent* dependencies. Aunit supports both single *.mon file dependencies and project-level dependencies.
+Used to specify any *TestEvent* dependencies. Aunit supports both single *.mon file dependencies and project-level dependencies. Single file dependencies should be relativeily pathed, with $AUNIT_PROJECT_HOME ($AUNIT_HOME/workspace) as the default root directory.
 
-Sample: SampleTestEvent.mon
+Single file dependency sample: Math/test/FloatTest.mon
+
 ```
-//@Depends test/sample.mon, UnitTest
-event SampleTestEvent { 
+//@Depends Math/src/Float.mon
+event MathFloatTest {
 ...
 }
 ```
 
-Before running the tests within SampleTestEvent.mon a correlator will be initialised with test/sample.mon and UnitTest project injected respectively. Please note that changes to project-level dependencies require an `aunit build` to be run prior to testing to ensure the tests run against the latest codebase.
+User-defined project dependency sample: Math/test/IntegerTest.mon
 
-Changes to *TestEvent* files and single file dependencies do not require an `aunit build` to take effect.
+```
+//@Depends Math
+event MathIntegerTest {
+...
+}
+```
+
+Upon running `aunit test Math`, two pysys projects are created: `MathFloatTest` and `MathIntegerTest`. MathFloatTest will have Math/src/Float.mon injected upon running, whereas MathIntegerTest will have the whole of the Math project injected.
+
+Please note that changes to project-level dependencies require an `aunit build` to be run prior to testing to ensure the tests run against the latest codebase.
+
+Changes to *TestEvent* files and single file dependencies *do not* require an `aunit build` to take effect.
 
 ## //@Test
 
 Used to define a test action. Aunit runs all test actions defined within a test file sequentially, with each prior test completing prior to starting the next. Two action signatures are supported: synchronous and asynchronous. Synchronous tests are assumed to be complete once the action returns, asynchronous tests wait for the cbDone callback to be called.
 
-Sample: SampleTestEvent.mon
+Test action sample: HelloWorld/test/HelloWorldTest.mon
 
 ```
- //@Test     
-    action test_001 {
-        // This synchronous test will complete immediately after the function returns.
-        asserter.assertTrue("test_001", "hello world" = "hello world");  
+//@Test     
+action test_001 {
+    // This synchronous test will complete immediately after the function returns.
+    asserter.assertTrue("test_001", "hello world" = "hello world");  
+}
+
+//@Test
+action test_002(action<> cbDone) {
+
+    // This asynchronous test will complete once cbDone() is called. Failure to call cbDone() will result in a hanging test.
+
+    SampleEvent s;
+
+    on SampleEvent():s 
+        and not wait(1.0) {
+            asserter.assertString("SampleEvent valid", s.toString(), expected.toString());
+            cbDone();
     }
 
-    //@Test
-    action test_002(action<> cbDone) {
-
-        // This asynchronous test will complete once cbDone() is called. Failure to call cbDone() will result in a hanging test.
-    
-        SampleEvent s;
-
-        on SampleEvent():s 
-            and not on wait(1.0) {
-                asserter.assertString(s.toString(), expected.toString());
-                cbDone();
-        }
-
-        on wait(1.0) 
-            and not SampleEvent() {
-                asserter.assertTrue("SampleEvent not routed", false);
-                cbDone();
-        }
-
-        route SampleEvent("hello world");
+    on wait(1.0) 
+        and not SampleEvent() {
+            asserter.assertTrue("SampleEvent not routed", false);
+            cbDone();
     }
 
+    route SampleEvent("hello world");
+}
 ```
 
 ## //@Initialise
@@ -329,14 +340,14 @@ The com.aunit.Asserter event allows users to perform assertsions within their *T
 To use the asserter, simply import the *.bnd file to your SoftwareAG Studio, define it as a member of your *TestEvent* and from there, the Asserter can be used without initialisation.
 
 ```
-//@Depends UnitTest
+//@Depends 
 event SomeTestEvent {
     
     com.aunit.Asserter.Asserter asserter;
 
     //@Test
     action test_001() {
-        asserter.assertTrue("My assert", true);           // passes
+        asserter.assertTrue("My assert", true);            // passes
         asserter.assertFloat("My float assert", 1.0, 1.1); // fails
     }
 
@@ -370,7 +381,7 @@ asserter.assertString("Comparing events a and b",
 );
 ```
 
-For more insight, view the source at `$AUNIT_HOME/workspace/UnitTest/src/objects/Aunit.mon`
+For more insight, view the source at `$AUNIT_HOME/project-build/epl/UnitTest/src/objects/Aunit.mon`
 
 # AUnit Project Structure 
 
@@ -430,23 +441,25 @@ A project-level *.aunit file specifies:
 
 **NB:** TestEvent *.mon files should NEVER be defined at the project level. They are automatically injected at runtime by the test loader. Adding them to the project-level *.aunit definition can cause unexpected behaviour.
 
-The below sample is taken from `$AUNIT_HOME/workspace/UnitTest/UnitTest.aunit` and is an example of a user-defined project-level dependency which itself, does not have any dependencies other than the project files:
+The below sample is taken from `$AUNIT_HOME/workspace/Math/Math.aunit` and is an example of a user-defined project-level dependency which itself, does not have any dependencies other than the project files:
 
 ```
-<bundle name="UnitTest"
-        description="A framework for providing UnitTest functionality in EPL. To be used with AUnit."
-        dir="../projects/UnitTest"
-        depends="UnitTest">
+<bundle name="Math"
+        description="A basic project to demonstrate user-level project dependency testing."
+        dir="../projects/Math"
+        macro_dir="Math"
+        depends="Math">
 
-    <source ext="" macro="UnitTest">
+    <source ext="" macro="Math">
         <fileset dir="src">
-            <include name="objects/AUnit.mon"/>
+            <include name="Integer.mon"/>
+            <include name="Float.mon"/>
         </fileset>
     </source>
 
-    <cdp ext="" macro="UnitTest">
+    <cdp ext="" macro="Math">
         <fileset>
-            <include name="UnitTest.cdp"/>
+            <include name="Math.cdp"/>
         </fileset>
     </cdp>
 
@@ -454,14 +467,14 @@ The below sample is taken from `$AUNIT_HOME/workspace/UnitTest/UnitTest.aunit` a
     </dependencies>
     
     <macros>
-        <macro name="UnitTest" unless="onlyMonitors">
+        <macro name="Math" unless="onlyMonitors">
         </macro>
     </macros>
 
 </bundle>
 ```
 
-Use the above file as a template when defining user project-level dependencies. Users could take this file, replacing references to `UnitTest` and replacing with `UserProjectName` and updating the *.mon injection order as per the below:
+Use the above file as a template when defining user project-level dependencies. Users could take this file, replacing references to `Math` and replacing with `UserProjectName` and updating the *.mon injection order as per the below:
 
 ```
 <fileset dir="src">
@@ -472,7 +485,7 @@ Use the above file as a template when defining user project-level dependencies. 
 
 ```
 
-Once a *.aunit file is created and placed in the `$AUNIT_HOME/workspace/ProjectName` directory, run the `aunit build` command to update your local repository.
+Once a *.aunit file is created and placed in the `$AUNIT_PROJECT_HOME/ProjectName` directory, run the `aunit build` command to update your local repository.
 
 ## Defining Software-AG project-level dependencies
 
@@ -487,23 +500,25 @@ Firstly, the ant-macros.xml or equivalent file needs to be added to aunit's know
     <!-- import file="${env.APAMA_FOUNDATION_HOME}/ASB/ant_macros/adapter-support-macros.xml" / -->
 ```
 
-Once the aunit-imports.xml is updated the *.aunit file must be updated to include relevant dependencies. Below is a sample of the UnitTest.aunit which has been extended to include the memory store as a dependency.
+Once the aunit-imports.xml is updated the *.aunit file must be updated to include relevant dependencies. Below is a sample of the Math.aunit which has been extended to include the memory store as a dependency.
 
 ```
-<bundle name="UnitTest"
-        description="A framework for providing UnitTest functionality in EPL. To be used with AUnit."
-        dir="../projects/UnitTest"
-        depends="UnitTest">
+<bundle name="Math"
+        description="A basic project to demonstrate user-level project dependency testing."
+        dir="../projects/Math"
+        macro_dir="Math"
+        depends="Math">
 
-    <source ext="" macro="UnitTest">
+    <source ext="" macro="Math">
         <fileset dir="src">
-            <include name="objects/AUnit.mon"/>
+            <include name="Integer.mon"/>
+            <include name="Float.mon"/>
         </fileset>
     </source>
 
-    <cdp ext="" macro="UnitTest">
+    <cdp ext="" macro="Math">
         <fileset>
-            <include name="UnitTest.cdp"/>
+            <include name="Math.cdp"/>
         </fileset>
     </cdp>
 
@@ -512,7 +527,7 @@ Once the aunit-imports.xml is updated the *.aunit file must be updated to includ
     </dependencies>
     
     <macros>
-        <macro name="UnitTest" unless="onlyMonitors">
+        <macro name="Math" unless="onlyMonitors">
             <depends name="memory-store-bundle" />
         </macro>
     </macros>

@@ -1,0 +1,54 @@
+package com.aunit.sample.test;
+
+using com.aunit.Asserter;
+
+using com.aunit.sample.Integer;
+
+//@Depends Math
+event MathIntegerTest {
+    
+    Asserter asserter;
+
+    //@Test     
+    action testIntegerAdd() {
+
+        Integer two := Integer(2);
+        Integer three := Integer(3);
+        
+        Integer actual := two.add(three);
+        Integer expected := Integer(5);
+
+        asserter.assertInteger("testIntegerAdd integer", actual.value, expected.value);
+        asserter.assertString("testIntegerAdd string", actual.toString(), expected.toString());
+
+    }
+
+    //@Test     
+    action testIntegerMultiply() {
+
+        Integer two := Integer(2);
+        Integer three := Integer(3);
+        
+        Integer actual := two.multiply(three);
+        Integer expected := Integer(6);
+
+        asserter.assertInteger("testIntegerMultiply integer", actual.value, expected.value);
+        asserter.assertString("testIntegerMultiply string", actual.toString(), expected.toString());
+
+    }
+
+    //@Initialise
+    action init(action<> cbInit) {
+        cbInit();
+    }
+
+    //@Setup
+    action setup(action<> cbSetup) {
+        cbSetup();
+    }
+
+    //@Teardown
+    action teardown(action<> cbTeardown) {
+        cbTeardown();
+    }
+}

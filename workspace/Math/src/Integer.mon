@@ -1,0 +1,15 @@
+
+package com.aunit.sample;
+
+event Integer {
+
+	integer value;
+
+	action add(Integer a) returns Integer {
+		return Integer(self.value + a.value);
+	}
+
+	action multiply(Integer a) returns Integer {
+		return Integer(self.value * a.value);
+	}
+}

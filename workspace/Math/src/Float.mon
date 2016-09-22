@@ -1,0 +1,15 @@
+
+package com.aunit.sample;
+
+event Float {
+
+	float value;
+
+	action add(Float a) returns Float {
+		return Float(self.value + a.value);
+	}
+
+	action multiply(Float a) returns Float {
+		return Float(self.value * a.value);
+	}
+}
