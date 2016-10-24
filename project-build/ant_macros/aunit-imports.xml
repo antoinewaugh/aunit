@@ -26,13 +26,11 @@
 	<!-- Base APAMA ant macro file, do not remove. Must be below macrodef above -->
 	<import file="${env.APAMA_HOME}/etc/apama-macros.xml" />
 
+	<!-- Base AUNIT Custiom imports -->
+	<import file="${env.AUNIT_HOME}/.__repository/ant_macros/custom-imports.xml" />
+
 	<!-- Base AUNIT ant macro file, do not remove -->
 	<import file="${env.AUNIT_HOME}/.__repository/ant_macros/aunit.xml" />
 
-	<!-- Custom ant macro files below -->
-	
-	<!-- Base APAMA CMF ant macro files, uncomment if CMF available -->
-    <!-- import file="${env.APAMA_FOUNDATION_HOME}/ASB/ant_macros/adapter-support-macros.xml" / -->
-	
 </project>
 

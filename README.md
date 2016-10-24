@@ -493,14 +493,14 @@ SoftwareAG provides *.bnd, *.cdp and ant-macro.xml files for some of their produ
 
 Although slightly more involved, a *.aunit file can be extended to include such dependencies. 
 
-Firstly, the ant-macros.xml or equivalent file needs to be added to aunit's known macro list. This can be found in $AUNIT_HOME/project-build/ant-macros/aunit-imports.xml. A sample from this file is below where the currently commented import statement would be replaced with a valid path.
+Firstly, the ant-macros.xml or equivalent file needs to be added to aunit's known macro list. Users can define the custom ant import list by modifying $AUNIT_HOME/project-build/ant-macros/custom-imports.xml. A sample from this file is below where the currently commented import statement would be replaced with a valid path.
 
 ``` 
     <!-- Base APAMA CMF ant macro files, uncomment if CMF available -->
-    <!-- import file="${env.APAMA_FOUNDATION_HOME}/ASB/ant_macros/adapter-support-macros.xml" / -->
+    <!-- import file="${env.APAMA_FOUNDATION_HOME}/ant_macros/CMF-macros.xml" / -->
 ```
 
-Once the aunit-imports.xml is updated the *.aunit file must be updated to include relevant dependencies. Below is a sample of the Math.aunit which has been extended to include the memory store as a dependency.
+Once the file dependency has been added to custom-imports.xml, users can update their *.aunit file to include relevant macro dependencies. Below is a sample of the Math.aunit which has been extended to include the memory store as a dependency.
 
 ```
 <bundle name="Math"

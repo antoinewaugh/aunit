@@ -1,0 +1,10 @@
+<project name="CUSTOM-imports">
+
+	<!-- Import environment variables -->
+	<property environment="env"/>
+
+	<!-- Custom ant macro files below -->
+    <import file="${env.APAMA_FOUNDATION_HOME}/ant_macros/CMF-macros.xml" />
+
+</project>
+
