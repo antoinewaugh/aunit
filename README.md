@@ -343,7 +343,7 @@ To use the asserter, simply import the *.bnd file to your SoftwareAG Studio, def
 //@Depends 
 event SomeTestEvent {
     
-    com.aunit.Asserter.Asserter asserter;
+    com.aunit.Asserter asserter;
 
     //@Test
     action test_001() {
