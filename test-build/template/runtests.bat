@@ -12,7 +12,7 @@ IF "%AUNIT_TEST_HOME%"=="" (
 )
 
 IF "%AUNIT_PYTHON_PATH%"=="" (
-	SET AUNIT_PYTHON_PATH=%AUNIT_HOME%\.__test\lib;%APAMA_HOME%\third_party\python\Lib;%APAMA_HOME%\third_party\python\Lib\site-packages;%APAMA_HOME%\third_party\python\DLLs;
+	SET AUNIT_PYTHON_PATH="%AUNIT_TEST_HOME%\lib;%APAMA_HOME%\third_party\python\Lib;%APAMA_HOME%\third_party\python\Lib\site-packages;%APAMA_HOME%\third_party\python\DLLs;
 	SET PYTHONPATH=!AUNIT_PYTHON_PATH!;%PYTHONPATH%
 )
 
