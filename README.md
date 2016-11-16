@@ -173,6 +173,22 @@ For information on defining user-level project dependencies please see *Defining
 
 # TestEvents & Test Build Process
 
+## Aunit Commands
+
+Aunit supports two primary commands, `build` and `test`.
+
+The `build` command takes no arguments, and builds all projects located in the $AUNIT_PROJECT_HOME directory ($AUNIT_HOME/workspace by default). 
+
+The `test` command has two optional arguments:
+
+`aunit test` runs all tests located under $AUNIT_PROJECT_HOME
+`aunit test ProjectName` runs all tests located under the folder matching `ProjectName` within $AUNIT_PROJECT_HOME.
+`aunit test ProjectName TestEvent` applies the same filter as above, but also ensures only test events whose filename match the TestEvent filter will run.
+
+For example, the 'Math' project located in $AUNIT_HOME/workspace can be run using the command `aunit test Math`. If a user wishes to run the IntegerTest.mon specifically, they can call `aunit test Math IntegerTest.mon`.
+
+Finally, filtering is supported, such that `aunit test Math Integer*` would run any test whos name starts with 'Integer' and is located under the Math project.
+
 ## TestEvent Signature
 
 A *TestEvent* is any *.mon file which matches the aunit *TestEvent* template - that is, it contains all of the following annotations:
@@ -187,7 +203,7 @@ A *TestEvent* is any *.mon file which matches the aunit *TestEvent* template - t
 
 ## Test Build Process
 
-When the `aunit test [ProjectName]` command is executed, aunit scans the `$AUNIT_PROJECT_HOME` directory for any *.mon files which match the *TestEvent* signature as described above. 
+When the `aunit test [ProjectName TestEvent]` command is executed, aunit scans the `$AUNIT_PROJECT_HOME` directory for any *.mon files which match the *TestEvent* signature as described above. 
 
 For every *TestEvent* a corresponding pysys test is created in the `$AUNIT_HOME/.__test` directory. These pysys tests are then run with a custom ant loader which injects any project and file-level dependencies, with the result printed to console. For example when running `aunit test HelloWorld` the following folder structure is made:
 
