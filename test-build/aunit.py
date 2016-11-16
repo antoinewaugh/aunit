@@ -13,14 +13,15 @@ ANNOTATION = '//@'
 NEWLINE = '\n'
 
 def usage():
-    print "Usage: aunit.py [-s ProjectName]"
+    print "Usage: aunit.py [-s ProjectName -f TestFile]"
     print
     print "Scans test source directory for aunit test files and creates associated pysys tests."
     print 
     print "$AUNIT_HOME environment variable must be set, $AUNIT_PROJECT_HOME optional, defaults"
     print "to $AUNIT_HOME/workspace if not set."
     print 
-    print "  -s, --source         Run only test event file provided."
+    print "  -s, --source         Run only test event files within given project."
+    print "  -f, --file           Run only test event file provided."
     print "  -h, --help           Display this help message and exit"
     print
     sys.exit();
@@ -409,7 +410,8 @@ def create_pysys_test(aunit_test, filename, aunit_template_dir, source_dir, outp
 def main(argv):
 
     source_project = None
-    
+    source_file = '*.mon'
+
     aunit_home = os.environ.get('AUNIT_HOME')
 
     aunit_project_home = os.environ.get('AUNIT_PROJECT_HOME', 
@@ -419,7 +421,7 @@ def main(argv):
                                      os.path.join(aunit_home, '.__test'))
 
     try:
-        opts, args = getopt.getopt(argv, "hs:", ["help", "source="])
+        opts, args = getopt.getopt(argv, "hs:f:", ["help", "source=", "file="])
     except getopt.GetoptError, err:
         print err
         print
@@ -429,6 +431,8 @@ def main(argv):
             usage()
         if o in ["-s", "--source"]:
             source_project = a
+        if o in ["-f", "--file"]:
+            source_file = a
 
     # Validate AUNIT_HOME and AUNIT_PROJECT_HOME exist
     if not os.path.isdir(aunit_home) or \
@@ -470,7 +474,7 @@ def main(argv):
 
     # For Each Valid TestEvent located in $AUNIT_PROJECT_HOME, 
     # create pysys test
-    for file in list_files(aunit_project_home, '*.mon', source_project): 
+    for file in list_files(aunit_project_home, source_file, source_project): 
         contents = load_contents(file) 
         aunit_test = TestEvent(remove_single_line_comments(contents))
 

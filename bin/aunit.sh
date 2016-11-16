@@ -11,8 +11,12 @@ function test {
 
 	if [[ $# -eq 1 ]]; then
 		eval "python ${AUNIT_HOME}/test-build/aunit.py -s $1"
- 	else
-		eval "python ${AUNIT_HOME}/test-build/aunit.py"
+ 	else 
+ 		if [[ $# -eq 2 ]]; then
+			eval "python ${AUNIT_HOME}/test-build/aunit.py -s $1 -f $2"
+		else
+			eval "python ${AUNIT_HOME}/test-build/aunit.py"
+		fi
  	fi
 	
 	## Call Pysys Tests
@@ -54,7 +58,7 @@ function error {
 ## ########################################
 
 function usage {
-	echo "Usage: call 'aunit build' or 'aunit test [ProjectName]' "
+	echo "Usage: call 'aunit build' or 'aunit test [ProjectName TestFile]' "
 }
 
 

@@ -25,14 +25,15 @@ GOTO :usage
 :: Generate Pysys Tests
 
 SET PROJECT_FILTER=-s%2
+SET FILE_FILTER=-f%3
 IF "%2"=="" SET PROJECT_FILTER=""
+IF "%3"=="" SET FILE_FILTER=""
 
 IF "%AUNIT_TEST_HOME%"=="" (
 	SET AUNIT_TEST_HOME=%AUNIT_HOME%\.__test
 )
 
-call python "%AUNIT_HOME%/test-build/aunit.py" "%PROJECT_FILTER%"
-
+call python "%AUNIT_HOME%/test-build/aunit.py" "%PROJECT_FILTER%" "%FILE_FILTER%" 
 :: Call Pysys Tests
 
 call %AUNIT_TEST_HOME%\runtests.bat
@@ -70,7 +71,7 @@ echo ""
 
 :usage
 
-ECHO Usage: call "aunit build" or "aunit test [ProjectName]"
+ECHO Usage: call "aunit build" or "aunit test [ProjectName TestFile]"
 
 :: ########################################
 :: END
