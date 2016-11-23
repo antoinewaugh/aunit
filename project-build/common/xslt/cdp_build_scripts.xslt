@@ -5,7 +5,6 @@
 	<xsl:param name="manifest_dir"/>
 	<xsl:param name="ext"/>
 	<xsl:param name="source_dir"/>
-	<xsl:param name="macro_dir"/>
 
 	<xsl:output omit-xml-declaration="yes" method="xml" encoding="UTF-8" indent="no"/>
 	<xsl:strip-space elements="*"/>
@@ -21,7 +20,7 @@
 		<xsl:choose>
 			<xsl:when test="$ext = $extension">
 				<xsl:element name="mkdir">
-					<xsl:attribute name="dir"><xsl:value-of select="$macro_dir"/></xsl:attribute>
+                    <xsl:attribute name="dir"><xsl:value-of select="../@macro_dir"/></xsl:attribute>
 				</xsl:element>
 				<xsl:text>&#10;</xsl:text>
 				<xsl:element name="engine-package">
@@ -31,7 +30,7 @@
 						<!-- Loop through each 'include' tag -->
 						<xsl:for-each select="include">
 							<xsl:attribute name="manifest"><xsl:value-of select="concat($manifest_dir, '/', ../../../@name, $manifest_extension)"/></xsl:attribute>
-							<xsl:attribute name="output"><xsl:value-of select="concat($macro_dir, '/', @name)"/></xsl:attribute>
+                            <xsl:attribute name="output"><xsl:value-of select="concat(../../../@macro_dir, '/', @name)"/></xsl:attribute>
 							<xsl:attribute name="dir"><xsl:value-of select="$source_dir"/></xsl:attribute>
 						</xsl:for-each>
 					</xsl:for-each>

@@ -1,7 +1,8 @@
 <bundle name="UnitTest"
 		description="A framework for providing UnitTest functionality in EPL. To be used with AUnit."
 		dir="../projects/UnitTest"
-		macro_dir="UnitTest"
+		cdp_dir="${env.AUNIT_BUNDLE_HOME}/cdp" 
+		macro_dir="${env.AUNIT_BUNDLE_HOME}/cdp"
 		depends="UnitTest">
 
 	<source ext="" macro="UnitTest">

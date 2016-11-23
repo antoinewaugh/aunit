@@ -6,8 +6,7 @@
 	<xsl:param name="version"/>
 
 	<!-- Get params from ANT -->
-	<xsl:param name="cdp_dir"/>
-
+	
 	<xsl:import href="bundle_include.xslt"/>
 	
 	<xsl:output method="xml" encoding="UTF-8" indent="yes" xslt:indent-amount="4"/>
@@ -37,7 +36,7 @@
 	<xsl:template match="cdp">
 		<!-- Loop through each 'fileset' tag -->
 		<xsl:for-each select="fileset">
-			<xsl:attribute name="dir"><xsl:value-of select="$cdp_dir"/></xsl:attribute>
+			<xsl:attribute name="dir"><xsl:value-of select="../../@cdp_dir"/></xsl:attribute>
 			<!-- Loop through each 'include' tag -->
 			<xsl:for-each select="include">
 				<xsl:element name="include">

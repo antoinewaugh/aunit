@@ -3,8 +3,6 @@
 	
 	<xsl:import href="macro_include.xslt"/>
 	
-	<xsl:param name="macro_dir"/>
-
 	<xsl:output omit-xml-declaration="yes" method="xml" encoding="UTF-8" indent="yes" xslt:indent-amount="4"/>
 	
 	<!-- Find matching nested <bundle><cdp> tags -->
@@ -39,7 +37,7 @@
 					<xsl:element name="filelist">
 						<!-- Loop through each 'fileset' tag -->
 						<xsl:for-each select="fileset">
-							<xsl:attribute name="dir"><xsl:value-of select="$macro_dir"/></xsl:attribute>
+							<xsl:attribute name="dir"><xsl:value-of select="../../@macro_dir"/></xsl:attribute>
 							<!-- Loop through each 'include' tag -->
 							<xsl:for-each select="include">
 								<xsl:element name="file">

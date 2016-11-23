@@ -23,6 +23,11 @@ function test {
 	if [[ -z "$AUNIT_TEST_HOME" ]]; then 
 		export AUNIT_TEST_HOME=${AUNIT_HOME}/.__test
 	fi
+
+	if [[ -z "$AUNIT_BUNDLE_HOME" ]]; then 
+		export AUNIT_BUNDLE_HOME=${AUNIT_HOME}/.__repository
+	fi
+
 	eval "${AUNIT_TEST_HOME}/runtests.sh"
 
 }

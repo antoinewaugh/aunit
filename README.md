@@ -425,10 +425,10 @@ $AUNIT_HOME
 Users can override any or all of these paths by setting the following environment variables:
 
 * `$AUNIT_PROJECT_HOME` (project source)
-* `$AUNIT_BUILD_HOME`   (build output)
+* `$AUNIT_BUNDLE_HOME`   (build output)
 * `$AUNIT_TEST_HOME`    (test output)
 
-**NB:** The `$AUNIT_TEST_HOME` and `$AUNIT_BUILD_HOME` directories are purged on `aunit test` and `aunit build` run commands. Users should never write to these directories, nor depend on their state to remain consistent between aunit runs.
+**NB:** The `$AUNIT_TEST_HOME` and `$AUNIT_BUNDLE_HOME` directories are purged on `aunit test` and `aunit build` run commands. Users should never write to these directories, nor depend on their state to remain consistent between aunit runs.
 
 
 # Aunit Build Process

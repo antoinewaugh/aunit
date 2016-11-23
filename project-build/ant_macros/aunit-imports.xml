@@ -27,10 +27,10 @@
 	<import file="${env.APAMA_HOME}/etc/apama-macros.xml" />
 
 	<!-- Base AUNIT Custiom imports -->
-	<import file="${env.AUNIT_HOME}/.__repository/ant_macros/custom-imports.xml" />
+	<import file="${env.AUNIT_BUNDLE_HOME}/ant_macros/custom-imports.xml" />
 
 	<!-- Base AUNIT ant macro file, do not remove -->
-	<import file="${env.AUNIT_HOME}/.__repository/ant_macros/aunit.xml" />
+	<import file="${env.AUNIT_BUNDLE_HOME}/ant_macros/aunit.xml" />
 
 </project>
 

@@ -11,6 +11,10 @@ IF "%AUNIT_TEST_HOME%"=="" (
 	SET AUNIT_TEST_HOME="%AUNIT_HOME%\.__test"
 )
 
+IF "%AUNIT_BUNDLE_HOME%"=="" (
+	SET AUNIT_BUNDLE_HOME="%AUNIT_HOME%\.__repository"
+)
+
 IF "%AUNIT_PYTHON_PATH%"=="" (
 	SET AUNIT_PYTHON_PATH=%AUNIT_TEST_HOME%\lib;%APAMA_HOME%\third_party\python\Lib;%APAMA_HOME%\third_party\python\Lib\site-packages;%APAMA_HOME%\third_party\python\DLLs;
 	SET PYTHONPATH=!AUNIT_PYTHON_PATH!;%PYTHONPATH%

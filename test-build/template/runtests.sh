@@ -29,6 +29,11 @@ if [[ -z "$AUNIT_TEST_HOME" ]]; then
 	export AUNIT_TEST_HOME=${AUNIT_HOME}/.__test
 fi
 
+if [[ -z "$AUNIT_BUNDLE_HOME" ]]; then 
+	export AUNIT_BUNDLE_HOME=${AUNIT_HOME}/.__repository
+fi
+
+
 if [[ -z "$AUNIT_PYTHON_PATH" ]]; then 
 	export AUNIT_PYTHON_PATH=$AUNIT_TEST_HOME/lib
 	export PYTHONPATH=$AUNIT_PYTHON_PATH:$PYTHONPATH

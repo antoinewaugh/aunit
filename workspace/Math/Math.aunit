@@ -1,7 +1,8 @@
 <bundle name="Math"
 		description="A basic project to demonstrate user-level project dependency testing."
 		dir="../projects/Math"
-		macro_dir="Math"
+		cdp_dir="${env.AUNIT_BUNDLE_HOME}/cdp" 
+		macro_dir="${env.AUNIT_BUNDLE_HOME}/cdp"
 		depends="Math">
 
 	<source ext="" macro="Math">

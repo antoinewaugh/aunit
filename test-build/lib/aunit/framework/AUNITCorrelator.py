@@ -12,7 +12,7 @@ class AUNITCorrelatorHelper(CorrelatorHelper):
         self.log = self.parent.log 
         self.eventSender = None
 
-        self.AntAunitImports = os.path.join(os.environ['AUNIT_HOME'], '.__repository', 'ant_macros', 'aunit-imports.xml')
+        self.AntAunitImports = os.path.join(os.environ['AUNIT_BUNDLE_HOME'], 'ant_macros', 'aunit-imports.xml')
 
         #################################################################
         # Set Classpath for ANT Call

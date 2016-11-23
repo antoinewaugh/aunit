@@ -37,7 +37,7 @@
 					<!-- Loop through each 'fileset' tag -->
 					<xsl:for-each select="fileset">
 						<xsl:element name="filelist">
-							<xsl:attribute name="dir"><xsl:value-of select="concat($project_dir,'/',../../@macro_dir, '/', @dir)"/></xsl:attribute>
+							<xsl:attribute name="dir"><xsl:value-of select="concat($project_dir,'/', ../../@dir,'/', @dir)" /></xsl:attribute>
 							<!-- Loop through each 'include' tag -->
 							<xsl:for-each select="include">
 								<xsl:element name="file">

@@ -144,7 +144,6 @@
 			
 			<!-- Loop through all '*.xml' files and create cdp *.bnd file -->
 			<xslt basedir="${aunit.repository.dir}/bundle_definitions" includes="*.xml" extension=".bnd" destdir="${aunit.repository.dir}/bundles" style="${common.xslt.dir}/cdp_bundle.xslt">
-				<param name="cdp_dir" expression="${AUNIT_HOME}/.__repository/cdp" />
 				<param name="date" expression="${BUNDLE_TODAY}"/>
 				<param name="year" expression="${BUNDLE_YEAR}"/>
 				<param name="version" expression="1.0"/>
@@ -161,7 +160,6 @@
 				<param name="manifest_extension" expression="_manifest.txt"/>
 				<param name="manifest_dir" expression="${aunit.repository.dir}/manifest"/>
 				<param name="source_dir" expression="${aunit.repository.dir}"/> 							
-				<param name="macro_dir" expression="${env.AUNIT_HOME}/.__repository/cdp" />
 			</xslt>
 			
 			<echo>Creating CDP build script </echo>
@@ -184,7 +182,6 @@
 
 			<!-- Loop through all '*.xml' files for the cdp macros -->
 			<xslt basedir="${aunit.repository.dir}/bundle_definitions" includes="*.xml" extension=".macro" destdir="${aunit.repository.dir}/macros" style="${common.xslt.dir}/cdp_macro.xslt">
-				<param name="macro_dir" expression="${env.AUNIT_HOME}/.__repository/cdp" />
 			</xslt>
 		</sequential>
 	</macrodef>
@@ -205,7 +202,7 @@
 			
 			<!-- Loop through all '*.xml' files for the source macros -->
 			<xslt basedir="${aunit.repository.dir}/bundle_definitions" includes="*.xml" extension=".macro" destdir="${aunit.repository.dir}/macros" style="${common.xslt.dir}/source_macro.xslt">
-					<param name="project_dir" expression="${env.AUNIT_HOME}/.__repository/projects" />
+					<param name="project_dir" expression="${aunit.repository.dir}/projects" />
 			</xslt>	
 
 		</sequential>

@@ -33,6 +33,10 @@ IF "%AUNIT_TEST_HOME%"=="" (
 	SET AUNIT_TEST_HOME=%AUNIT_HOME%\.__test
 )
 
+IF "%AUNIT_BUNDLE_HOME%"=="" (
+	SET AUNIT_BUNDLE_HOME=%AUNIT_HOME%\.__repository
+)
+
 call python "%AUNIT_HOME%/test-build/aunit.py" "%PROJECT_FILTER%" "%FILE_FILTER%" 
 :: Call Pysys Tests
 
