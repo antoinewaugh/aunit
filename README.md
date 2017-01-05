@@ -15,7 +15,7 @@ Currently aunit tests support:
     * Synchronous test actions
     * Asynchronous test actions
     * Setup/Teardown actions
-    * Initialise action
+    * Initialise action 
     * External Project Referencing
     * External File Referencing
   
@@ -41,7 +41,20 @@ cd $AUNIT_HOME/bin
 aunit build
 aunit test HelloWorld
 ```
+    //@Initialise
+    action init(action<> cbInit) {
+        cbInit();
+    }
 
+    //@Setup
+    action setup(action<> cbSetup) {
+        cbSetup();
+    }
+
+    //@Teardown
+    action teardown(action<> cbTeardown) {
+        cbTeardown();
+    }
 The test result should be written to the screen.
 
 ```
@@ -195,9 +208,9 @@ A *TestEvent* is any *.mon file which matches the aunit *TestEvent* template - t
 
     * //@Depends 
     * //@Test           (multiple permitted)
-    * //@Initialise
-    * //@Setup
-    * //@Teardown
+    * //@Initialise     (optional)
+    * //@Setup          (optional)
+    * //@Teardown       (optional)
 
 **NB:** aunit is very particular about the location of annotation(s) within a *TestEvent* file. Annotations must be on exactly the line preceding the epl keyword it is expecting. 
 
@@ -242,11 +255,11 @@ As previously mentioned, aunit supports the following annotations:
 
     * //@Depends 
     * //@Test           (multiple permitted)
-    * //@Initialise
-    * //@Setup
-    * //@Teardown
+    * //@Initialise     (optional)
+    * //@Setup          (optional)
+    * //@Teardown       (optional)
 
-The current version of aunit requires all annotations exist in a *TestEvent* file for it to be considered valid.
+NB: If a //Test annotation is identified and no corresponding //@Depends a warning is output to the console, and the TestEvent is not considered valid.
 
 ## //@Depends
 
