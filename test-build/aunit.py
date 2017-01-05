@@ -122,6 +122,15 @@ class TestEvent(object):
         """ Returns raw contents of test event (string) """
         return ''.join(self._content)
 
+    def has_initialise_action(self):
+        return hasattr(self, '_initialise_action')
+
+    def has_setup_action(self):
+        return hasattr(self, '_setup_action')
+ 
+    def has_teardown_action(self):
+        return hasattr(self, '_teardown_action')
+
     def is_valid(self):
         """ Returns true if all annotation requirements,
             action and event definitions are met 
@@ -132,11 +141,16 @@ class TestEvent(object):
             hasattr(self, '_project_depends') and
             hasattr(self, '_package') and
             hasattr(self, '_event_name') and
-            hasattr(self, '_initialise_action') and
-            hasattr(self, '_setup_action') and
-            hasattr(self, '_teardown_action') and
             len(self._test_actions) > 0
         )
+
+    def is_missing_annotations(self):
+        """ Returns true if //Test annotation identified
+            but minimum annotation requirements not met
+
+        """
+
+        return len(self._test_actions) > 0 and not self.is_valid()
 
     def get_package(self):
         """ Returns package declaration (string) """
@@ -357,10 +371,11 @@ def create_pysys_test(aunit_test, filename, aunit_template_dir, source_dir, outp
             '{!packagename}': aunit_test.get_package(),
             '{!eventname}': aunit_test.get_event_name(),
             '{!load_list}': testrunner_load_list,
-            '{!setupaction}': aunit_test.get_setup_action(),
-            '{!teardownaction}': aunit_test.get_teardown_action(),
-            '{!initialiseaction}': aunit_test.get_initialise_action()
-        }
+            '{!setupaction}': 'tests.{}'.format(aunit_test.get_setup_action()) if aunit_test.has_setup_action() else 'defaultSetup',
+            '{!teardownaction}': 'tests.{}'.format(aunit_test.get_teardown_action()) if aunit_test.has_teardown_action() else 'defaultTeardown',
+            '{!initialiseaction}': 'tests.{}'.format(aunit_test.get_initialise_action()) if aunit_test.has_initialise_action() else 'defaultInitialise'
+    }
+
 
     # Ensure target directory does not yet exist
 
@@ -485,7 +500,8 @@ def main(argv):
                               aunit_template_dir=aunit_template_dir,
                               source_dir=aunit_project_home,
                               output_dir=test_output_dir)
-
+        elif aunit_test.is_missing_annotations():
+            print "WARNING: {} contains tests but TestEvent minimum annotation requirements not met, ignoring.".format(file)
 
 if __name__ == "__main__":
 

@@ -12,10 +12,22 @@ monitor {!eventname}_TestRunner {
 	{!eventname} tests;
 
 	action onload() {
-		t := t.create("{!eventname}_TestRunner", tests.{!setupaction}, tests.{!teardownaction}, tests.{!initialiseaction});
+		t := t.create("{!eventname}_TestRunner", {!setupaction}, {!teardownaction}, {!initialiseaction});
 		{!load_list}
 		t.execute();
 	}
 
+	action defaultSetup(action<> cbSetup) {
+		cbSetup();
+	}
+
+	action defaultTeardown(action<> cbTeardown) {
+		cbTeardown();
+	}
+
+	action defaultInitialise(action<> cbInitialise) {
+		cbInitialise();
+	}
+	
 }
 
