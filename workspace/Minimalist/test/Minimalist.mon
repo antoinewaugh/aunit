@@ -1,0 +1,17 @@
+package com.aunit.sample;
+
+using com.aunit.Asserter;
+
+//@Depends
+event BasicTest {
+    
+    Asserter asserter;
+    
+    //@Test     
+    action test_001 {
+        // This synchronous test will complete immediately after the function returns.
+        asserter.assertTrue("test_001", true);  
+    }
+
+
+}

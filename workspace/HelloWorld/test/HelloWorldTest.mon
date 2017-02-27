@@ -50,13 +50,4 @@ event HelloWorldTest {
         cbInit();
     }
 
-    //@Setup
-    action setup(action<> cbSetup) {
-        cbSetup();
-    }
-
-    //@Teardown
-    action teardown(action<> cbTeardown) {
-        cbTeardown();
-    }
 }
