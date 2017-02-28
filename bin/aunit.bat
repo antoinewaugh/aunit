@@ -30,11 +30,11 @@ IF "%2"=="" SET PROJECT_FILTER=""
 IF "%3"=="" SET FILE_FILTER=""
 
 IF "%AUNIT_TEST_HOME%"=="" (
-	SET AUNIT_TEST_HOME="%AUNIT_HOME%\.__test"
+	SET AUNIT_TEST_HOME=%AUNIT_HOME%\.__test
 )
 
 IF "%AUNIT_BUNDLE_HOME%"=="" (
-	SET AUNIT_BUNDLE_HOME="%AUNIT_HOME%\.__repository"
+	SET AUNIT_BUNDLE_HOME=%AUNIT_HOME%\.__repository
 )
 
 call python "%AUNIT_HOME%/test-build/aunit.py" "%PROJECT_FILTER%" "%FILE_FILTER%" 

@@ -13,6 +13,7 @@ class PySysTest(BaseTest):
 		correlator.start(logfile='correlator.log')
 		correlator.injectBundles(targets={!depends_bundles})
 		{!inject_depends_file_command}
+		correlator.receive(filename='aunit.out', channels=['AUNIT_OUT'], suppressBatch=True)
 		correlator.injectMonitorscript(filenames='TestEvent.mon')
 		correlator.injectMonitorscript(filenames='TestRunner.mon')
 		self.waitForSignal(file='correlator.log', expr='TESTS COMPLETE', condition='==1', timeout=60, poll=0.1)

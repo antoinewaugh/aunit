@@ -76,11 +76,25 @@ event AsynchronousTest {
 	integer passCount;
 	
 	action register(Assert assertion) {
+
 		if assertion.assertion then {
 			passCount := passCount + 1;
 		} else {
 			failCount := failCount + 1;
 		}
+
+		publishCSV(assertion);
+
+	}
+
+	action publishCSV(Assert assertion) {
+
+		string result := "FAILED. ";
+
+		if assertion.assertion then {
+			result := "PASSED. ";
+		}	 
+		emit self.name + ", "  + assertion.reference + ", " + assertion.message + ", " + result to "AUNIT_OUT";
 	}
 
 	action getResultString() returns string {
@@ -226,8 +240,8 @@ event TestExecutor {
 			log message at INFO;
 			
 			teardown(runNextTest);	
-		}
-
+		}		
+			
 		currentTest.test(onTestDone);
 	}
 	
@@ -271,6 +285,7 @@ event TestExecutor {
 		string message := assertion.reference + " => " + assertion.message;
 		emit message to "UnitTest";
 		log message at INFO;		
+
 	}
 
 }
