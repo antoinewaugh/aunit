@@ -7,8 +7,8 @@ from pysys.constants import TRUE,FALSE,FOREGROUND,BACKGROUND,PROJECT,FAILED, ENV
 
 class AUNITCorrelatorHelper(CorrelatorHelper):
 
-    def __init__(self, parent, port=None, host=None):
-        CorrelatorHelper.__init__(self, parent, port, host)
+    def __init__(self, parent, port=None, host=None, name='correlator'):
+        CorrelatorHelper.__init__(self, parent, port, host, name)
         self.log = self.parent.log 
         self.eventSender = None
 
