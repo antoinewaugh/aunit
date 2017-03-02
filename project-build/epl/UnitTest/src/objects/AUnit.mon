@@ -83,18 +83,27 @@ event AsynchronousTest {
 			failCount := failCount + 1;
 		}
 
-		publishCSV(assertion);
-
 	}
 
-	action publishCSV(Assert assertion) {
+	action getAssertCSV(Assert assertion) returns string {
 
-		string result := "FAILED. ";
+		string result := "FAILED";
 
 		if assertion.assertion then {
-			result := "PASSED. ";
+			result := "PASSED";
 		}	 
-		emit self.name + ", "  + assertion.reference + ", " + assertion.message + ", " + result to "AUNIT_OUT";
+		return self.name + ","  + assertion.reference + "," + assertion.message + "," + result; 
+	}
+
+	action getSummaryCSV() returns string {
+
+		string result := "PASSED";
+			
+		if self.failCount > 0 then {
+			result := "FAILED. ";
+		} 
+
+		return self.name + ", SUMMARY, " + self.passCount.toString() + " successful / " + self.failCount.toString() + " unsuccessful , " + result;
 	}
 
 	action getResultString() returns string {
@@ -236,7 +245,9 @@ event TestExecutor {
 
 			string message :=  currentTest.getResultString();
 			
-			emit message to "UnitTest";
+//			emit self.currentTest.getSummaryCSV() to "UnitTest";
+			//emit message to "UnitTest";
+
 			log message at INFO;
 			
 			teardown(runNextTest);	
@@ -262,7 +273,7 @@ event TestExecutor {
 	
 	action publishTestsComplete() {
 		string message := reference + " TESTS COMPLETE";
-		emit message to "UnitTest";
+//		emit message to "UnitTest";
 		log message at INFO;
 		
 	}	
@@ -282,10 +293,9 @@ event TestExecutor {
 	*/
 
 	action publish(Assert assertion) {
-		string message := assertion.reference + " => " + assertion.message;
-		emit message to "UnitTest";
+		string message := assertion.reference + " => " + assertion.message	;
+		emit self.currentTest.getAssertCSV(assertion) to "UnitTest";
 		log message at INFO;		
-
 	}
 
 }
@@ -399,5 +409,3 @@ event Asserter {
 		send Assert(ref, assertion, msg) to TestExecutor.getName();
 	}
 }
-
-

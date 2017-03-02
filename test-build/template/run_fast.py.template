@@ -1,9 +1,9 @@
 import sys, os, logging
+import csv
 from pysys import log
 from pysys.constants import *
 from pysys.basetest import BaseTest
 from aunit.framework.AUNITCorrelator import AUNITCorrelatorHelper
-
 
 class PySysTest(BaseTest):
 
@@ -13,15 +13,21 @@ class PySysTest(BaseTest):
 		correlator.start(logfile='correlator.log')
 		correlator.injectBundles(targets={!depends_bundles})
 		{!inject_depends_file_command}
-		correlator.receive(filename='aunit.out', channels=['AUNIT_OUT'], suppressBatch=True)
+		correlator.receive(filename='aunit.out', channels=['UnitTest'], suppressBatch=True)
 		correlator.injectMonitorscript(filenames='TestEvent.mon')
 		correlator.injectMonitorscript(filenames='TestRunner.mon')
 		self.waitForSignal(file='correlator.log', expr='TESTS COMPLETE', condition='==1', timeout=60, poll=0.1)
 		correlator.flush()
 
 	def validate(self):
-
-{!asserts}
+		assertfile = os.path.join(self.output, 'aunit.out')
+		if os.path.exists(assertfile):
+			with open(assertfile, 'rb') as f:
+			    reader = csv.reader(f)
+			    for row in reader:
+			    	self.assertTrue(expr=row[3]=="PASSED", assertMessage='{}:{}'.format(row[0], row[1])	)
+		else:
+			self.assertTrue(expr=False, assertMessage='Unable to locate aunit assert file.')
 
 		self.assertLineCount(file='correlator.log', expr=' 0 successful', condition="==0",  assertMessage=" All tests perform an assert ")
 		self.assertLineCount(file='correlator.log', expr='TESTS COMPLETE', condition="==1", assertMessage="*** ALL TESTS COMPLETE CHECK *** ")			

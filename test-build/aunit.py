@@ -321,7 +321,6 @@ def create_pysys_test(aunit_test, filename, aunit_template_dir, source_dir, outp
 
             return
 
-    pysys_asserts=''
     testrunner_load_list=''
 
     # For each test action:
@@ -345,15 +344,7 @@ def create_pysys_test(aunit_test, filename, aunit_template_dir, source_dir, outp
                 aunit_test.get_event_name(), 
                 test_action.name, 
                 test_action.name)
-
-        # Pysys assert command for current test action
-        pysys_asserts += """\t\tself.assertLineCount(file="correlator.log", expr="{}:{} : PASSED.", condition="==1", assertMessage="{}:{}") \n""".format(
-                aunit_test.get_event_name(),
-                test_action.name, 
-                aunit_test.get_event_name(), 
-                test_action.name)
-
-
+      
     # Define File Dependencies (if any)
     resources_dir = '"{}"'.format(os.path.join(output_dir, 'resources'))
     if len(file_dependencies) > 0:
@@ -367,7 +358,6 @@ def create_pysys_test(aunit_test, filename, aunit_template_dir, source_dir, outp
     substitutions = {
             '{!depends_bundles}': aunit_test.get_project_dependencies(),
             '{!inject_depends_file_command}': file_dependencies,
-            '{!asserts}': pysys_asserts,
             '{!packagename}': aunit_test.get_package(),
             '{!eventname}': aunit_test.get_event_name(),
             '{!load_list}': testrunner_load_list,
