@@ -92,7 +92,7 @@ event AsynchronousTest {
 		if assertion.assertion then {
 			result := "PASSED";
 		}	 
-		return self.name + ","  + assertion.reference + "," + assertion.message + "," + result; 
+		return self.name + "\t"  + assertion.reference + "\t" + assertion.message + "\t" + result; 
 	}
 
 	action getSummaryCSV() returns string {
@@ -103,7 +103,7 @@ event AsynchronousTest {
 			result := "FAILED. ";
 		} 
 
-		return self.name + ", SUMMARY, " + self.passCount.toString() + " successful / " + self.failCount.toString() + " unsuccessful , " + result;
+		return self.name + "\tSUMMARY\t" + self.passCount.toString() + " successful / " + self.failCount.toString() + " unsuccessful\t" + result;
 	}
 
 	action getResultString() returns string {
