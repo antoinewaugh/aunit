@@ -6,12 +6,10 @@
 		below sets default value for AUNIT_IGNORE_IMPORTS, 
 		if env variable already exists it will not override
 	-->
-	<property name="env.AUNIT_IGNORE_IMPORTS" value="false" />
-
 	<if>
-	<equals arg1="${env.AUNIT_IGNORE_IMPORTS}" arg2="false"/>
+	<equals arg1="${env.AUNIT_IMPORT_CMF}" arg2="true"/>
 	<then>
-    	<!--import file="${env.APAMA_FOUNDATION_HOME}/ant_macros/CMF-macros.xml" /-->
+    	<import file="${env.APAMA_FOUNDATION_HOME}/ant_macros/CMF-macros.xml" />
 	</then>
 	</if>
 </project>
