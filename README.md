@@ -446,8 +446,8 @@ Users can override any or all of these paths by setting the following environmen
 
 For Convenience, the following environment variables can be set:
 
-* $AUNIT_TIMEOUT=60 (default) - Allows user to override default timeout for a single test to take.
-* $AUNIT_IMPORT_CMF=false (default) - Imports Capital market framework and dependent bundles for testing (requires the CMF to be installed).
+* `$AUNIT_TIMEOUT=60` (default) - Allows user to override default timeout for a single test to take.
+* `$AUNIT_IMPORT_CMF=false` (default) - Imports Capital market framework and dependent bundles for testing (requires the CMF to be installed).
 
 # Aunit Build Process
 
