@@ -363,9 +363,9 @@ def create_pysys_test(aunit_test, filename, aunit_template_dir, source_dir, outp
             '{!load_list}': testrunner_load_list,
             '{!setupaction}': 'tests.{}'.format(aunit_test.get_setup_action()) if aunit_test.has_setup_action() else 'defaultSetup',
             '{!teardownaction}': 'tests.{}'.format(aunit_test.get_teardown_action()) if aunit_test.has_teardown_action() else 'defaultTeardown',
-            '{!initialiseaction}': 'tests.{}'.format(aunit_test.get_initialise_action()) if aunit_test.has_initialise_action() else 'defaultInitialise'
+            '{!initialiseaction}': 'tests.{}'.format(aunit_test.get_initialise_action()) if aunit_test.has_initialise_action() else 'defaultInitialise',
+            '{!timeout}': os.environ.get('AUNIT_TIMEOUT', 60)
     }
-
 
     # Ensure target directory does not yet exist
 

@@ -432,7 +432,6 @@ $AUNIT_HOME
 └───.__test
 │   │   ...
 
-
 ```
 
 Users can override any or all of these paths by setting the following environment variables:
@@ -443,6 +442,12 @@ Users can override any or all of these paths by setting the following environmen
 
 **NB:** The `$AUNIT_TEST_HOME` and `$AUNIT_BUNDLE_HOME` directories are purged on `aunit test` and `aunit build` run commands. Users should never write to these directories, nor depend on their state to remain consistent between aunit runs.
 
+# Optional Environment Variables
+
+For Convenience, the following environment variables can be set:
+
+* $AUNIT_TIMEOUT=60 (default) - Allows user to override default timeout for a single test to take.
+* $AUNIT_IMPORT_CMF=false (default) - Imports Capital market framework and dependent bundles for testing (requires the CMF to be installed).
 
 # Aunit Build Process
 
