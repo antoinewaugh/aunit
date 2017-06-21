@@ -1,0 +1,8 @@
+type: aunit
+
+name: ProjectA
+
+files:
+  - projectA1.mon
+  - projectA2.mon
+

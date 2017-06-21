@@ -1,0 +1,8 @@
+type: aunit
+name: ProjectB
+files:
+  - projectB1.mon
+  - projectB2.mon
+
+depends:
+  - ProjectA
