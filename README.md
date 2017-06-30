@@ -41,20 +41,6 @@ cd $AUNIT_HOME/bin
 aunit build
 aunit test HelloWorld
 ```
-    //@Initialise
-    action init(action<> cbInit) {
-        cbInit();
-    }
-
-    //@Setup
-    action setup(action<> cbSetup) {
-        cbSetup();
-    }
-
-    //@Teardown
-    action teardown(action<> cbTeardown) {
-        cbTeardown();
-    }
 The test result should be written to the screen.
 
 ```
