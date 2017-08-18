@@ -87,17 +87,18 @@ fi
 ## ########################################
 
 ## Check 'mode' being run
-
 if [[ $1 == "test" ]]; then
-	if [[ $# -eq 2 ]]; then 
-		test $2
-	else
-		test
-	fi
-else 
-	if [[ $1 == "build" ]]; then 
-		build
-	else
-		usage
-	fi
+  if [[ $# -eq 2 ]]; then
+          test $2
+  elif [[ $# -eq 3 ]]; then
+          test $2 $3
+  else
+          test
+  fi
+else
+  if [[ $1 == "build" ]]; then 
+     build
+  else
+     usage
+  fi
 fi
