@@ -63,7 +63,9 @@ function error {
 ## ########################################
 
 function usage {
-	echo "Usage: call 'aunit build' or 'aunit test [ProjectName TestFile]' "
+	echo "Usages: aunit <build> "
+	echo "        aunit <test> [Project] [FilenameFilter]"
+	echo "        aunit <all> "
 }
 
 
@@ -95,10 +97,11 @@ if [[ $1 == "test" ]]; then
   else
           test
   fi
+elif [[ $1 == "build" ]]; then 
+    build
+elif [[ $1 == "all" ]]; then 
+    build
+    test 
 else
-  if [[ $1 == "build" ]]; then 
-     build
-  else
-     usage
-  fi
+    usage
 fi
