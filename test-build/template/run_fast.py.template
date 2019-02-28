@@ -22,7 +22,7 @@ class PySysTest(BaseTest):
 	def validate(self):
 		assertfile = os.path.join(self.output, 'aunit.out')
 		if os.path.exists(assertfile):
-			with open(assertfile, 'rb') as f:
+			with open(assertfile, 'rt') as f:
 			    reader = csv.reader(f, delimiter='\t')
 			    for row in reader:
 			    	self.assertTrue(expr=row[3]=="PASSED", assertMessage='{}:{}'.format(row[0], row[1])	)
