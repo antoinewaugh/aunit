@@ -1,5 +1,5 @@
 __author__ = 'antoine waugh: antoine@reltech.com'
-
+from __future__ import print_function
 import shutil
 import getopt
 import os, sys
@@ -13,17 +13,14 @@ ANNOTATION = '//@'
 NEWLINE = '\n'
 
 def usage():
-    print "Usage: aunit.py [-s ProjectName -f TestFile]"
-    print
-    print "Scans test source directory for aunit test files and creates associated pysys tests."
-    print 
-    print "$AUNIT_HOME environment variable must be set, $AUNIT_PROJECT_HOME optional, defaults"
-    print "to $AUNIT_HOME/workspace if not set."
-    print 
-    print "  -s, --source         Run only test event files within given project."
-    print "  -f, --file           Run only test event file provided."
-    print "  -h, --help           Display this help message and exit"
-    print
+    print("Usage: aunit.py [-s ProjectName -f TestFile]\n")
+    print("Scans test source directory for aunit test files and creates associated pysys tests.\n")
+    print("$AUNIT_HOME environment variable must be set, $AUNIT_PROJECT_HOME optional, defaults")
+    print("to $AUNIT_HOME/workspace if not set.\n")
+    print("  -s, --source         Run only test event files within given project.")
+    print("  -f, --file           Run only test event file provided.")
+    print("  -h, --help           Display this help message and exit\n")
+    
     sys.exit();
 
 def remove_single_line_comments(content):
@@ -304,7 +301,7 @@ def create_pysys_test(aunit_test, filename, aunit_template_dir, source_dir, outp
 
         if os.path.isfile(source_filepath):
             # print copy in verbose mode
-            print '\nCopying {} to {}\n'.format(source_filepath, dest_filepath)
+            print('\nCopying {} to {}\n'.format(source_filepath, dest_filepath))
             
             shutil.copy(
                 source_filepath, 
@@ -314,10 +311,10 @@ def create_pysys_test(aunit_test, filename, aunit_template_dir, source_dir, outp
             file_dependencies.append(dependency_filename)
 
         else:
-            print '\nInvalid file dependency listed within {}: {}. Moving to next test. \n'.format(
+            print('\nInvalid file dependency listed within {}: {}. Moving to next test. \n'.format(
                 aunit_test.get_event_name(),
                 source_filepath
-            ) 
+            ))
 
             return
 
@@ -428,8 +425,7 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv, "hs:f:", ["help", "source=", "file="])
     except getopt.GetoptError, err:
-        print err
-        print
+        print(err)
         usage()
     for o, a in opts:
         if o in ["-h", "--help"]:
@@ -442,7 +438,7 @@ def main(argv):
     # Validate AUNIT_HOME and AUNIT_PROJECT_HOME exist
     if not os.path.isdir(aunit_home) or \
         not os.path.isdir(aunit_project_home):
-            print "AUNIT_HOME/AUNIT_PROJECT_HOME provided were not valid directories."
+            print("AUNIT_HOME/AUNIT_PROJECT_HOME provided were not valid directories.")
             sys.exit(2)
 
     if os.path.exists(test_output_dir):
@@ -491,7 +487,7 @@ def main(argv):
                               source_dir=aunit_project_home,
                               output_dir=test_output_dir)
         elif aunit_test.is_missing_annotations():
-            print "WARNING: {} contains tests but TestEvent minimum annotation requirements not met, ignoring.".format(file)
+            print("WARNING: {} contains tests but TestEvent minimum annotation requirements not met, ignoring.".format(file))
 
 if __name__ == "__main__":
 
