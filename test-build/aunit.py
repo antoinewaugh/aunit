@@ -1,10 +1,11 @@
-__author__ = 'antoine waugh: antoine@reltech.com'
 from __future__ import print_function
 import shutil
 import getopt
 import os, sys
 from glob import glob
 from collections import namedtuple
+
+__author__ = 'antoine waugh: antoine@reltech.com'
 
 TestAction = namedtuple('TestAction', 'name is_async')
 
@@ -424,7 +425,7 @@ def main(argv):
 
     try:
         opts, args = getopt.getopt(argv, "hs:f:", ["help", "source=", "file="])
-    except getopt.GetoptError, err:
+    except (getopt.GetoptError, err):
         print(err)
         usage()
     for o, a in opts:
