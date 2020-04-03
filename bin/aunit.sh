@@ -10,12 +10,12 @@ function test {
 	## Generate Pysys Tests
 
 	if [[ $# -eq 1 ]]; then
-		eval "python ${AUNIT_HOME}/test-build/aunit.py -s $1"
+		eval "python3.7 ${AUNIT_HOME}/test-build/aunit.py -s $1"
  	else 
  		if [[ $# -eq 2 ]]; then
-			eval "python ${AUNIT_HOME}/test-build/aunit.py -s $1 -f $2"
+			eval "python3.7 ${AUNIT_HOME}/test-build/aunit.py -s $1 -f $2"
 		else
-			eval "python ${AUNIT_HOME}/test-build/aunit.py"
+			eval "python3.7 ${AUNIT_HOME}/test-build/aunit.py"
 		fi
  	fi
 	
