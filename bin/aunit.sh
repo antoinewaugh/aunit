@@ -9,13 +9,17 @@ function test {
 
 	## Generate Pysys Tests
 
+  if [[ -z "$AUNIT_PYTHON" ]]; then
+    export AUNIT_PYTHON=python
+  fi
+
 	if [[ $# -eq 1 ]]; then
-		eval "python ${AUNIT_HOME}/test-build/aunit.py -s $1"
+    eval "$AUNIT_PYTHON ${AUNIT_HOME}/test-build/aunit.py -s $1"
  	else 
  		if [[ $# -eq 2 ]]; then
-			eval "python ${AUNIT_HOME}/test-build/aunit.py -s $1 -f $2"
+      eval "$AUNIT_PYTHON ${AUNIT_HOME}/test-build/aunit.py -s $1 -f $2"
 		else
-			eval "python ${AUNIT_HOME}/test-build/aunit.py"
+			eval "$AUNIT_PYTHON ${AUNIT_HOME}/test-build/aunit.py"
 		fi
  	fi
 	
