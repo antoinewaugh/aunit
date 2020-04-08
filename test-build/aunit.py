@@ -267,7 +267,7 @@ def write_file(source_path, dest_path, substitutions={}):
                 fout.write(line)
 
 def load_contents(filepath):
-    with open(filepath, "rt") as f:
+    with open(filepath, , encoding="utf8", errors="ignore") as f:
         return f.read()
 
 def list_files(path, filenameFilter='*', source_dir=None):
