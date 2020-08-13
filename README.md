@@ -435,7 +435,7 @@ For Convenience, the following environment variables can be set:
 * `$AUNIT_TIMEOUT=60` (default) - Allows user to override default timeout for a single test to take.
 * `$AUNIT_IMPORT_CMF=false` (default) - Imports Capital market framework and dependent bundles for testing (requires the CMF to be installed).
 * `$AUNIT_CDP_BUILD=false` - Compile all source to *.cdp not readable EPL. This requires the paid softwareAG version of apama. See *AUNIT_CDP_BUILD Flag* at the bottom of the README
-* `$AUNIT_PYTHYON=python` - Path to version of python aunit should use.
+* `$AUNIT_PYTHON=python` - Path to version of python aunit should use.
 * `$AUNIT_CORRELATORCONFIG=/path/to/correlator.yaml` - Optional correlator configuration file aunit should load. Useful for plugin extensions which are to be tested using aunit.
 
 
